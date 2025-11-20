@@ -1,4 +1,4 @@
-package com.example.airlinebyt.models;
+package com.example.airlinebyt.models.person;
 
 import jakarta.persistence.*;
 import lombok.Data;
