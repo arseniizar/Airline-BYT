@@ -5,3 +5,5 @@ jdk-24 amazon correto
 gradle
 
 create venv
+
+branch naming convention: YOUR_NAME/dev
