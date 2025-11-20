@@ -36,3 +36,4 @@ out/
 ### VS Code ###
 .vscode/
 project_code.txt
+.venv
