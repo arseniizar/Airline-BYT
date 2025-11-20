@@ -2,10 +2,12 @@ package com.example.airlinebyt.models.booking;
 
 import com.example.airlinebyt.enums.BookingStatus;
 import com.example.airlinebyt.enums.PaymentMethod;
+import com.example.airlinebyt.models.BaseEntity;
 import com.example.airlinebyt.models.person.Passenger;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-public class Booking {
+public class Booking implements BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

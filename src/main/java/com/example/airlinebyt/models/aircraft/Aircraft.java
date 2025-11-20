@@ -1,6 +1,7 @@
 package com.example.airlinebyt.models.aircraft;
 
 import com.example.airlinebyt.enums.AircraftType;
+import com.example.airlinebyt.models.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @NoArgsConstructor
-public abstract class Aircraft {
+public abstract class Aircraft implements BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

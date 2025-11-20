@@ -1,12 +1,14 @@
 package com.example.airlinebyt.models.operations;
 
 import com.example.airlinebyt.enums.FlightStatus;
+import com.example.airlinebyt.models.BaseEntity;
 import com.example.airlinebyt.models.aircraft.Aircraft;
 import com.example.airlinebyt.models.person.CrewMember;
 import com.example.airlinebyt.models.person.Pilot;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +16,7 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
-public class Flight {
+public class Flight implements BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

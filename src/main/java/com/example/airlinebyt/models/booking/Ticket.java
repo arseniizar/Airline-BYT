@@ -1,15 +1,17 @@
 package com.example.airlinebyt.models.booking;
 
+import com.example.airlinebyt.models.BaseEntity;
 import com.example.airlinebyt.models.operations.Flight;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class Ticket {
+public class Ticket implements BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
