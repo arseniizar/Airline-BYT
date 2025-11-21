@@ -7,5 +7,4 @@ gradle
 create venv
 
 branch naming convention: YOUR_NAME/dev
-
 example: arsenii/dev
