@@ -26,7 +26,10 @@ public class Passenger extends Person {
     private List<Booking> bookings = new ArrayList<>();
 
     // Метод з діаграми
-    public void getLoyaltyPoints() {
+    public void printLoyaltyPoints() {
         System.out.println("Current loyalty points: " + this.loyaltyPoints);
     }
+
+
+
 }
