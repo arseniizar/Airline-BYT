@@ -13,13 +13,16 @@ class PilotTest {
 
     @Test
     void testPilotFields() {
-        Pilot pilot = new Pilot();
-
-        pilot.setFirstName("Pilot");
-        pilot.setLastName("XYZ");
-        pilot.setLicenceNumber("123");
-        pilot.setLicenceWarranty(LocalDate.of(2035, 1, 1));
-        pilot.setBaseSalary(10000.0);
+        Pilot pilot = new Pilot(
+                "Pilot",
+                "XYZ",
+                LocalDate.now().minusYears(30),
+                LocalDate.now().minusYears(3),
+                "Master's Degree",
+                "123",
+                LocalDate.of(2035, 1, 1),
+                10000.0
+        );
 
         assertEquals("Pilot", pilot.getFirstName());
         assertEquals("XYZ", pilot.getLastName());
@@ -30,7 +33,16 @@ class PilotTest {
 
     @Test
     void testFlightsSet() {
-        Pilot pilot = new Pilot();
+        Pilot pilot = new Pilot(
+                "Pilot",
+                "XYZ",
+                LocalDate.now().minusYears(30),
+                LocalDate.now().minusYears(3),
+                "Master's Degree",
+                "123",
+                LocalDate.of(2035, 1, 1),
+                10000.0
+        );
 
         Flight f1 = new Flight();
         Flight f2 = new Flight();

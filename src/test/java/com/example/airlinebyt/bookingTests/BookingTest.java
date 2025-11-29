@@ -9,6 +9,7 @@ import com.example.airlinebyt.models.person.Passenger;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +20,14 @@ class BookingTest {
     void testBookingFields() {
         Booking booking = new Booking();
 
-        Passenger passenger = new Passenger();
+        Passenger passenger = new Passenger(
+                "John",
+                "Doe",
+                LocalDate.now().minusYears(20),
+                "P123456",
+                "john.doe@gmail.com",
+                "+48123456789"
+        );
         Luggage luggage = new Luggage();
 
         booking.setId(5L);

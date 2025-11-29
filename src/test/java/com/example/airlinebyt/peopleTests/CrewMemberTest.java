@@ -4,28 +4,41 @@ import com.example.airlinebyt.models.operations.Flight;
 import com.example.airlinebyt.models.person.CrewMember;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CrewMemberTest {
 
     @Test
     void testCrewFields() {
-        CrewMember c = new CrewMember();
-
-        c.setFirstName("Crew");
-        c.setLastName("XYZ");
-        c.setBaseSalary(7000.0);
-        c.setPosition("Flight Attendant");
+        CrewMember c = new CrewMember(
+                "Crew",
+                "XYZ",
+                LocalDate.now().minusYears(18),
+                LocalDate.now().minusYears(1),
+                "Bachelor's Degree",
+                7000.0,
+                "Steward"
+        );
 
         assertEquals("Crew", c.getFirstName());
         assertEquals("XYZ", c.getLastName());
         assertEquals(7000.0, c.getBaseSalary());
-        assertEquals("Flight Attendant", c.getPosition());
+        assertEquals("Steward", c.getPosition());
     }
 
     @Test
     void testFlightsSet() {
-        CrewMember c = new CrewMember();
+        CrewMember c = new CrewMember(
+                "Crew",
+                "XYZ",
+                LocalDate.now().minusYears(18),
+                LocalDate.now().minusYears(1),
+                "Bachelor's Degree",
+                7000.0,
+                "Steward"
+        );
 
         Flight f1 = new Flight();
         Flight f2 = new Flight();
