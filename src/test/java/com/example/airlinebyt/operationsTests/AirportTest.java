@@ -8,11 +8,12 @@ class AirportTest {
 
     @Test
     void testFields() {
-        Airport a = new Airport();
+        Airport a = new Airport(
+                "WAW",
+                "Chopin Airport",
+                new Location("Poland", "Warsaw")
+        );
         a.setId(1L);
-        a.setIataCode("WAW");
-        a.setName("Chopin Airport");
-        a.setLocation(new Location("Poland", "Warsaw"));
 
         assertEquals(1L, a.getId());
         assertEquals("WAW", a.getIataCode());

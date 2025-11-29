@@ -1,28 +1,27 @@
 package com.example.airlinebyt.models.person;
 
 import com.example.airlinebyt.models.BaseEntity;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
-import jakarta.validation.constraints.PastOrPresent;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+
 
 import java.time.LocalDate;
 import java.time.Period;
 
-@Entity
-@DiscriminatorValue("EMPLOYEE")
-@Data
-@EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
+
 public abstract class Employee extends Person implements BaseEntity {
 
-    @PastOrPresent(message = "Hire date cannot be in the future")
+    @Getter
     private LocalDate hireDate;
 
+    @Getter
     private String education;
+
+    public Employee(String firstName, String lastName, LocalDate birthDate, LocalDate hireDate, String education) {
+        super(firstName, lastName, birthDate);
+        setHireDate(hireDate);
+        setEducation(education);
+    }
 
     @Transient
     public Integer getYearsOfExperience() {
@@ -30,5 +29,28 @@ public abstract class Employee extends Person implements BaseEntity {
             return null;
         }
         return Period.between(this.hireDate, LocalDate.now()).getYears();
+    }
+
+    public void setHireDate(LocalDate hireDate) {
+        if (hireDate == null) {
+            throw new IllegalArgumentException(this.getClass().getName() + ".hireDate cannot be empty");
+        }
+
+        if (hireDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException(this.getClass().getName() + ".hireDate cannot be in the future");
+        }
+
+        this.hireDate = hireDate;
+    }
+
+    public void setEducation(String education) {
+        if (education == null || education.isEmpty()) {
+            throw new IllegalArgumentException(this.getClass().getName() + ".education cannot be empty");
+        }
+        this.education = education;
+    }
+
+    public void setId(Long id) {
+        super.setId(id);
     }
 }

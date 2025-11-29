@@ -36,8 +36,6 @@ class PersonTest {
     @Test
     void testAgeWhenBirthDateNull() {
         PersonImpl p = new PersonImpl();
-        p.setBirthDate(null);
-
         assertNull(p.getAge());
     }
 }

@@ -1,20 +1,32 @@
 package com.example.airlinebyt.models.embeddable;
 
-import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Embeddable
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+import lombok.Getter;
+
 public class Location {
-
-    @NotBlank(message = "Country cannot be empty")
+    @Getter
     private String country;
-
-    @NotBlank(message = "City cannot be empty")
+    @Getter
     private String city;
+
+    public Location(String country, String city) throws IllegalArgumentException {
+        setCountry(country);
+        setCity(city);
+    }
+
+    public void setCountry(String country) throws IllegalArgumentException {
+        if (country == null || country.isEmpty()) {
+            throw new IllegalArgumentException(this.getClass().getName() + ".country cannot be empty");
+        }
+
+        this.country = country;
+    }
+
+    public void setCity(String city) throws IllegalArgumentException {
+        if (city == null || city.isEmpty()) {
+            throw new IllegalArgumentException(this.getClass().getName() + ".city cannot be empty");
+        }
+
+        this.city = city;
+    }
 }

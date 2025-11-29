@@ -1,0 +1,109 @@
+.
+├── README.md
+├── build.gradle
+├── collect_code.py
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── project-tree.txt
+├── settings.gradle
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── com
+    │   │       └── example
+    │   │           └── airlinebyt
+    │   │               ├── AirlineBytApplication.java
+    │   │               ├── controllers
+    │   │               │   ├── AircraftController.java
+    │   │               │   ├── AirportController.java
+    │   │               │   ├── BookingController.java
+    │   │               │   ├── EmployeeController.java
+    │   │               │   ├── FlightController.java
+    │   │               │   ├── GenericCrudController.java
+    │   │               │   └── PassengerController.java
+    │   │               ├── enums
+    │   │               │   ├── AircraftType.java
+    │   │               │   ├── BookingStatus.java
+    │   │               │   ├── FlightStatus.java
+    │   │               │   ├── PaymentMethod.java
+    │   │               │   └── SeatClass.java
+    │   │               ├── models
+    │   │               │   ├── BaseEntity.java
+    │   │               │   ├── aircraft
+    │   │               │   │   ├── Aircraft.java
+    │   │               │   │   ├── Commercial.java
+    │   │               │   │   ├── FixedWingAircraft.java
+    │   │               │   │   ├── Private.java
+    │   │               │   │   └── RotorcraftAircraft.java
+    │   │               │   ├── booking
+    │   │               │   │   ├── Booking.java
+    │   │               │   │   ├── Luggage.java
+    │   │               │   │   ├── Seat.java
+    │   │               │   │   └── Ticket.java
+    │   │               │   ├── embeddable
+    │   │               │   │   └── Location.java
+    │   │               │   ├── operations
+    │   │               │   │   ├── Airport.java
+    │   │               │   │   └── Flight.java
+    │   │               │   └── person
+    │   │               │       ├── CrewMember.java
+    │   │               │       ├── Employee.java
+    │   │               │       ├── Passenger.java
+    │   │               │       ├── Person.java
+    │   │               │       └── Pilot.java
+    │   │               ├── repositories
+    │   │               │   ├── AircraftRepository.java
+    │   │               │   ├── AirportRepository.java
+    │   │               │   ├── BookingRepository.java
+    │   │               │   ├── CrewMemberRepository.java
+    │   │               │   ├── EmployeeRepository.java
+    │   │               │   ├── FlightRepository.java
+    │   │               │   ├── InMemoryRepository.java
+    │   │               │   ├── LuggageRepository.java
+    │   │               │   ├── PassengerRepository.java
+    │   │               │   ├── PilotRepository.java
+    │   │               │   ├── SeatRepository.java
+    │   │               │   └── TicketRepository.java
+    │   │               └── services
+    │   │                   ├── AircraftService.java
+    │   │                   ├── AirportService.java
+    │   │                   ├── BookingService.java
+    │   │                   ├── EmployeeService.java
+    │   │                   ├── FlightService.java
+    │   │                   ├── GenericCrudService.java
+    │   │                   └── PassengerService.java
+    │   └── resources
+    │       └── application.properties
+    └── test
+        └── java
+            └── com
+                └── example
+                    └── airlinebyt
+                        ├── AirlineBytApplicationTests.java
+                        ├── BaseModelTest.java
+                        ├── aircraftTests
+                        │   ├── AircraftTest.java
+                        │   ├── FixedWingAircraftTest.java
+                        │   └── RotorcraftAircraftTest.java
+                        ├── bookingTests
+                        │   ├── BookingTest.java
+                        │   ├── LuggageTest.java
+                        │   ├── SeatTest.java
+                        │   └── TicketTest.java
+                        ├── embeddableTests
+                        │   └── LocationTest.java
+                        ├── operationsTests
+                        │   ├── AirportTest.java
+                        │   └── FlightTest.java
+                        └── peopleTests
+                            ├── CrewMemberTest.java
+                            ├── EmployeeTest.java
+                            ├── PassengerTest.java
+                            ├── PersonTest.java
+                            └── PilotTest.java
+
+30 directories, 77 files
