@@ -14,15 +14,15 @@ class LocationTest extends BaseModelTest {
     void testValidLocation() {
         Location loc = new Location("Poland", "Warsaw");
 
+        // ??? Що ми тут взагалі перевіряємо?
         Set<ConstraintViolation<Location>> violations = validator.validate(loc);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     void testInvalidLocation_BlankCountry() {
-        Location loc = new Location("", "Warsaw");
-
-        Set<ConstraintViolation<Location>> violations = validator.validate(loc);
-        assertFalse(violations.isEmpty());
+        assertThrowsExactly(IllegalArgumentException.class, () -> {
+            new Location("", "Warsaw");
+        });
     }
 }

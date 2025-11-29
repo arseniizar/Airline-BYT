@@ -4,6 +4,7 @@ package com.example.airlinebyt.operationsTests;
 
 import com.example.airlinebyt.enums.FlightStatus;
 import com.example.airlinebyt.models.aircraft.Commercial;
+import com.example.airlinebyt.models.embeddable.Location;
 import com.example.airlinebyt.models.operations.Airport;
 import com.example.airlinebyt.models.operations.Flight;
 import com.example.airlinebyt.models.person.CrewMember;
@@ -21,7 +22,7 @@ class FlightTest {
         Flight flight = new Flight();
 
         String flightNumber = "LO1234";
-        LocalDateTime dep = LocalDateTime.now();
+        LocalDateTime dep = LocalDateTime.now().plusDays(1);
         LocalDateTime arr = dep.plusHours(2);
 
         flight.setFlightNumber(flightNumber);
@@ -55,11 +56,17 @@ class FlightTest {
     void testAssignAirports() {
         Flight flight = new Flight();
 
-        Airport origin = new Airport();
-        Airport dest = new Airport();
+        Airport origin = new Airport(
+                "WAW",
+                "Warsaw Chopin Airport",
+                new Location("Poland", "Warsaw")
+        );
+        Airport dest = new Airport(
+                "BER",
+                "Berlin Brandenburg Airport",
+                new Location("Germany", "Berlin")
+        );
 
-        origin.setName("Warsaw");
-        dest.setName("Berlin");
 
         flight.setOrigin(origin);
         flight.setDestination(dest);
@@ -72,11 +79,26 @@ class FlightTest {
     void testPilots() {
         Flight flight = new Flight();
 
-        Pilot p1 = new Pilot();
-        Pilot p2 = new Pilot();
-
-        p1.setFirstName("Name1");
-        p2.setFirstName("Name2");
+        Pilot p1 = new Pilot(
+                "Pilot1",
+                "ABC",
+                LocalDateTime.now().minusYears(35).toLocalDate(),
+                LocalDateTime.now().minusYears(5).toLocalDate(),
+                "Master's Degree",
+                "LIC123",
+                LocalDateTime.now().plusYears(5).toLocalDate(),
+                12000.0
+        );
+        Pilot p2 = new Pilot(
+                "Pilot2",
+                "DEF",
+                LocalDateTime.now().minusYears(40).toLocalDate(),
+                LocalDateTime.now().minusYears(10).toLocalDate(),
+                "Master's Degree",
+                "LIC456",
+                LocalDateTime.now().plusYears(3).toLocalDate(),
+                13000.0
+        );
 
         flight.getPilots().add(p1);
         flight.getPilots().add(p2);
@@ -90,11 +112,24 @@ class FlightTest {
     void testCrew() {
         Flight flight = new Flight();
 
-        CrewMember c1 = new CrewMember();
-        CrewMember c2 = new CrewMember();
-
-        c1.setFirstName("Crew1");
-        c2.setFirstName("Crew2");
+        CrewMember c1 = new CrewMember(
+                "Crew1",
+                "GHI",
+                LocalDateTime.now().minusYears(28).toLocalDate(),
+                LocalDateTime.now().minusYears(3).toLocalDate(),
+                "Bachelor's Degree",
+                8000.0,
+                "Flight Attendant"
+        );
+        CrewMember c2 = new CrewMember(
+                "Crew2",
+                "JKL",
+                LocalDateTime.now().minusYears(30).toLocalDate(),
+                LocalDateTime.now().minusYears(5).toLocalDate(),
+                "Bachelor's Degree",
+                8500.0,
+                "Flight Attendant"
+        );
 
         flight.getCrew().add(c1);
         flight.getCrew().add(c2);
