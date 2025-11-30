@@ -1,8 +1,9 @@
 package com.example.airlinebyt.models.embeddable;
 
-
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class Location {
     @Getter
     private String country;

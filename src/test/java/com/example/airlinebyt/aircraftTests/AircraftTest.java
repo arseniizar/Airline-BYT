@@ -1,6 +1,5 @@
 package com.example.airlinebyt.aircraftTests;
 
-import com.example.airlinebyt.enums.AircraftType;
 import com.example.airlinebyt.models.aircraft.Aircraft;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

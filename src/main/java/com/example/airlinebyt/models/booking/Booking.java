@@ -3,7 +3,12 @@ package com.example.airlinebyt.models.booking;
 import com.example.airlinebyt.enums.BookingStatus;
 import com.example.airlinebyt.enums.PaymentMethod;
 import com.example.airlinebyt.models.BaseEntity;
+import com.example.airlinebyt.models.person.CrewMember;
 import com.example.airlinebyt.models.person.Passenger;
+import com.example.airlinebyt.models.person.Pilot;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +21,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Booking implements BaseEntity {
 
     @Id

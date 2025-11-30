@@ -4,8 +4,9 @@ import com.example.airlinebyt.models.BaseEntity;
 import com.example.airlinebyt.models.embeddable.Location;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-
+@NoArgsConstructor
 public class Airport implements BaseEntity {
     @Getter
     @Id

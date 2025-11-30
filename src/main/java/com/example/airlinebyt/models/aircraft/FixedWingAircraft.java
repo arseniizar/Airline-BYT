@@ -1,20 +1,23 @@
 package com.example.airlinebyt.models.aircraft;
 
-import com.example.airlinebyt.enums.AircraftType;
-import jakarta.persistence.Entity;
+import com.example.airlinebyt.models.aircraft.roles.AircraftRole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Getter
 @NoArgsConstructor
 public class FixedWingAircraft extends Aircraft {
 
+    @Getter
     private Double wingLength;
+    @Getter
     private int landingWheels;
 
-    public FixedWingAircraft(String model, int capacity, AircraftType type, Double wingLength, int landingWheels) {
-        super(model, capacity, type);
+    public String getType() {
+        return "fixed_wing";
+    }
+
+    public FixedWingAircraft(String model, int capacity, Double wingLength, int landingWheels, AircraftRole role) {
+        super(model, capacity, role);
         setWingLength(wingLength);
         setLandingWheels(landingWheels);
     }
