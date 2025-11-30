@@ -5,15 +5,16 @@ import com.example.airlinebyt.enums.PaymentMethod;
 import com.example.airlinebyt.models.BaseEntity;
 import com.example.airlinebyt.models.person.Passenger;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
 @NoArgsConstructor
 public class Booking implements BaseEntity {
 
@@ -21,6 +22,7 @@ public class Booking implements BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
@@ -30,14 +32,54 @@ public class Booking implements BaseEntity {
     private BigDecimal bookingFee;
     private BigDecimal totalPrice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "passenger_id")
+    @Transient
     private Passenger passenger;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Setter
+    @Transient
     private List<Ticket> tickets = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "luggage_id", referencedColumnName = "id")
+    @Setter
+    @Transient
     private Luggage luggage;
+
+    public Booking(BigDecimal totalPrice, Passenger passenger) {
+        setTotalPrice(totalPrice);
+        setPassenger(passenger);
+        this.bookingStatus = BookingStatus.IN_CART;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setBookingStatus(BookingStatus bookingStatus) {
+        if (bookingStatus == null) {
+            throw new IllegalArgumentException("Booking status cannot be null.");
+        }
+        this.bookingStatus = bookingStatus;
+    }
+
+    public void setBookingFee(BigDecimal bookingFee) {
+        if (bookingFee != null && bookingFee.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Booking fee cannot be negative.");
+        }
+        this.bookingFee = bookingFee;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        if (totalPrice == null || totalPrice.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Total price cannot be null or negative.");
+        }
+        this.totalPrice = totalPrice;
+    }
+
+    public void setPassenger(Passenger passenger) {
+        if (passenger == null) {
+            throw new IllegalArgumentException("Passenger cannot be null.");
+        }
+        this.passenger = passenger;
+    }
+
 }

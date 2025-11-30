@@ -2,15 +2,11 @@ package com.example.airlinebyt.models.person;
 
 import com.example.airlinebyt.models.booking.Booking;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class Passenger extends Person {
     @Getter
