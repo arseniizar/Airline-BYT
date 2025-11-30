@@ -1,0 +1,43 @@
+{
+  "1" : {
+    "id" : 1,
+    "flightNumber" : "LO3921",
+    "expectedDepartureTime" : [ 2025, 12, 10, 15, 0, 22, 394458000 ],
+    "expectedArrivalTime" : [ 2025, 12, 10, 17, 30, 22, 394479000 ],
+    "actualDepartureTime" : null,
+    "actualArrivalTime" : null,
+    "status" : "SCHEDULED",
+    "origin" : {
+      "id" : 1,
+      "iataCode" : "WAW",
+      "name" : "Warsaw Chopin Airport",
+      "location" : {
+        "country" : "Poland",
+        "city" : "Warsaw"
+      }
+    },
+    "destination" : {
+      "id" : 1,
+      "iataCode" : "WAW",
+      "name" : "Warsaw Chopin Airport",
+      "location" : {
+        "country" : "Poland",
+        "city" : "Warsaw"
+      }
+    },
+    "aircraft" : {
+      "id" : 1,
+      "model" : "Boeing 737",
+      "capacity" : 189,
+      "wingLength" : 34.3,
+      "landingWheels" : 6,
+      "type" : "fixed_wing",
+      "role" : {
+        "type" : "commercial",
+        "cargoCapacity" : 4500.0
+      }
+    },
+    "pilots" : [ ],
+    "crew" : [ ]
+  }
+}

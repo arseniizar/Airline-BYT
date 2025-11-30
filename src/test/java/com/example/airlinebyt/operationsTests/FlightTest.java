@@ -3,12 +3,11 @@ package com.example.airlinebyt.operationsTests;
 
 
 import com.example.airlinebyt.enums.FlightStatus;
-import com.example.airlinebyt.models.aircraft.Commercial;
-import com.example.airlinebyt.models.embeddable.Location;
+import com.example.airlinebyt.models.aircraft.Aircraft;
+import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import com.example.airlinebyt.models.operations.Airport;
+import com.example.airlinebyt.models.embeddable.Location;
 import com.example.airlinebyt.models.operations.Flight;
-import com.example.airlinebyt.models.person.CrewMember;
-import com.example.airlinebyt.models.person.Pilot;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -17,140 +16,130 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FlightTest {
 
+    static class TestAircraft extends Aircraft {
+        public TestAircraft() {
+            super("A320", 180, new CommercialRole(700));
+        }
+
+        @Override
+        public String getType() {
+            return "";
+        }
+    }
+
     @Test
-    void testBasicFields() {
+    void shouldSetValidFlightNumber() {
         Flight flight = new Flight();
 
-        String flightNumber = "LO1234";
-        LocalDateTime dep = LocalDateTime.now().plusDays(1);
-        LocalDateTime arr = dep.plusHours(2);
+        flight.setFlightNumber("LO123");
 
-        flight.setFlightNumber(flightNumber);
-        flight.setStatus(FlightStatus.SCHEDULED);
+        assertEquals("LO123", flight.getFlightNumber());
+    }
+
+    @Test
+    void shouldRejectInvalidFlightNumber() {
+        Flight flight = new Flight();
+
+        assertThrows(IllegalArgumentException.class, () -> flight.setFlightNumber(null));
+        assertThrows(IllegalArgumentException.class, () -> flight.setFlightNumber(""));
+    }
+
+    @Test
+    void shouldSetValidExpectedDepartureTime() {
+        Flight flight = new Flight();
+        LocalDateTime future = LocalDateTime.now().plusHours(2);
+
+        flight.setExpectedDepartureTime(future);
+
+        assertEquals(future, flight.getExpectedDepartureTime());
+    }
+
+    @Test
+    void shouldRejectPastExpectedDepartureTime() {
+        Flight flight = new Flight();
+        LocalDateTime past = LocalDateTime.now().minusHours(1);
+
+        assertThrows(IllegalArgumentException.class, () ->
+                flight.setExpectedDepartureTime(past));
+    }
+
+    @Test
+    void shouldSetValidArrivalTimeAfterDeparture() {
+        Flight flight = new Flight();
+        LocalDateTime departure = LocalDateTime.now().plusHours(1);
+        LocalDateTime arrival = departure.plusHours(3);
+
+        flight.setExpectedDepartureTime(departure);
+        flight.setExpectedArrivalTime(arrival);
+
+        assertEquals(arrival, flight.getExpectedArrivalTime());
+    }
+
+    @Test
+    void shouldRejectArrivalBeforeDeparture() {
+        Flight flight = new Flight();
+        LocalDateTime dep = LocalDateTime.now().plusHours(3);
+        LocalDateTime arr = dep.minusHours(1);
+
         flight.setExpectedDepartureTime(dep);
-        flight.setExpectedArrivalTime(arr);
 
-        assertEquals(flightNumber, flight.getFlightNumber());
+        assertThrows(IllegalArgumentException.class, () ->
+                flight.setExpectedArrivalTime(arr));
+    }
+
+    @Test
+    void shouldSetOriginAndDestination() {
+        Flight flight = new Flight();
+
+        Airport waw = new Airport("WAW", "Warsaw", new Location("Poland", "Warsaw"));
+        Airport krk = new Airport("KRK", "Krakow", new Location("Poland", "Kraków"));
+
+        flight.setOrigin(waw);
+        flight.setDestination(krk);
+
+        assertSame(waw, flight.getOrigin());
+        assertSame(krk, flight.getDestination());
+    }
+
+    @Test
+    void shouldRejectNullOriginDestination() {
+        Flight flight = new Flight();
+
+        assertThrows(IllegalArgumentException.class, () -> flight.setOrigin(null));
+        assertThrows(IllegalArgumentException.class, () -> flight.setDestination(null));
+    }
+
+    @Test
+    void shouldSetAircraft() {
+        Flight flight = new Flight();
+        Aircraft ac = new TestAircraft();
+
+        flight.setAircraft(ac);
+
+        assertSame(ac, flight.getAircraft());
+    }
+
+    @Test
+    void shouldRejectNullAircraft() {
+        Flight flight = new Flight();
+
+        assertThrows(IllegalArgumentException.class, () -> flight.setAircraft(null));
+    }
+
+    @Test
+    void shouldSetStatus() {
+        Flight flight = new Flight();
+
+        flight.setStatus(FlightStatus.SCHEDULED);
+
         assertEquals(FlightStatus.SCHEDULED, flight.getStatus());
-        assertEquals(dep, flight.getExpectedDepartureTime());
-        assertEquals(arr, flight.getExpectedArrivalTime());
     }
 
     @Test
-    void testAssignAircraft() {
-        Flight flight = new Flight();
-        Commercial aircraft = new Commercial();
-
-        aircraft.setModel("Boeing 737");
-        aircraft.setCapacity(180);
-
-        flight.setAircraft(aircraft);
-
-        assertNotNull(flight.getAircraft());
-        assertEquals(aircraft, flight.getAircraft());
-        assertEquals("Boeing 737", flight.getAircraft().getModel());
-        assertEquals(180, flight.getAircraft().getCapacity());
-    }
-
-    @Test
-    void testAssignAirports() {
+    void shouldRejectNullStatus() {
         Flight flight = new Flight();
 
-        Airport origin = new Airport(
-                "WAW",
-                "Warsaw Chopin Airport",
-                new Location("Poland", "Warsaw")
-        );
-        Airport dest = new Airport(
-                "BER",
-                "Berlin Brandenburg Airport",
-                new Location("Germany", "Berlin")
-        );
-
-
-        flight.setOrigin(origin);
-        flight.setDestination(dest);
-
-        assertEquals(origin, flight.getOrigin());
-        assertEquals(dest, flight.getDestination());
-    }
-
-    @Test
-    void testPilots() {
-        Flight flight = new Flight();
-
-        Pilot p1 = new Pilot(
-                "Pilot1",
-                "ABC",
-                LocalDateTime.now().minusYears(35).toLocalDate(),
-                LocalDateTime.now().minusYears(5).toLocalDate(),
-                "Master's Degree",
-                "LIC123",
-                LocalDateTime.now().plusYears(5).toLocalDate(),
-                12000.0
-        );
-        Pilot p2 = new Pilot(
-                "Pilot2",
-                "DEF",
-                LocalDateTime.now().minusYears(40).toLocalDate(),
-                LocalDateTime.now().minusYears(10).toLocalDate(),
-                "Master's Degree",
-                "LIC456",
-                LocalDateTime.now().plusYears(3).toLocalDate(),
-                13000.0
-        );
-
-        flight.getPilots().add(p1);
-        flight.getPilots().add(p2);
-
-        assertEquals(2, flight.getPilots().size());
-        assertTrue(flight.getPilots().contains(p1));
-        assertTrue(flight.getPilots().contains(p2));
-    }
-
-    @Test
-    void testCrew() {
-        Flight flight = new Flight();
-
-        CrewMember c1 = new CrewMember(
-                "Crew1",
-                "GHI",
-                LocalDateTime.now().minusYears(28).toLocalDate(),
-                LocalDateTime.now().minusYears(3).toLocalDate(),
-                "Bachelor's Degree",
-                8000.0,
-                "Flight Attendant"
-        );
-        CrewMember c2 = new CrewMember(
-                "Crew2",
-                "JKL",
-                LocalDateTime.now().minusYears(30).toLocalDate(),
-                LocalDateTime.now().minusYears(5).toLocalDate(),
-                "Bachelor's Degree",
-                8500.0,
-                "Flight Attendant"
-        );
-
-        flight.getCrew().add(c1);
-        flight.getCrew().add(c2);
-
-        assertEquals(2, flight.getCrew().size());
-        assertTrue(flight.getCrew().contains(c1));
-        assertTrue(flight.getCrew().contains(c2));
-    }
-
-    @Test
-    void testActualTimes() {
-        Flight flight = new Flight();
-
-        LocalDateTime actualDep = LocalDateTime.now();
-        LocalDateTime actualArr = actualDep.plusHours(3);
-
-        flight.setActualDepartureTime(actualDep);
-        flight.setActualArrivalTime(actualArr);
-
-        assertEquals(actualDep, flight.getActualDepartureTime());
-        assertEquals(actualArr, flight.getActualArrivalTime());
+        assertThrows(IllegalArgumentException.class, () -> flight.setStatus(null));
     }
 }
 

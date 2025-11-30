@@ -3,11 +3,13 @@ package com.example.airlinebyt.models.person;
 import com.example.airlinebyt.models.booking.Booking;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
 public class Passenger extends Person {
     @Getter
     @Column(unique = true)
@@ -25,6 +27,10 @@ public class Passenger extends Person {
     @Getter
     @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();
+
+    public String getType() {
+        return "passenger";
+    }
 
     public Passenger(String firstName, String lastName, LocalDate birthDate,
                      String passengerID, String email, String contactNumber) {

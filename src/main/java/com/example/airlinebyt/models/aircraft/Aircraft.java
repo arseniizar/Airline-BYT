@@ -1,53 +1,89 @@
 package com.example.airlinebyt.models.aircraft;
 
-import com.example.airlinebyt.enums.AircraftType;
 import com.example.airlinebyt.models.BaseEntity;
-import jakarta.persistence.*;
+import com.example.airlinebyt.models.aircraft.roles.AircraftRole;
+import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
+import com.example.airlinebyt.models.aircraft.roles.PrivateRole;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Getter
-@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "type",
+        defaultImpl = Void.class
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = FixedWingAircraft.class, name = "fixed_wing"),
+        @JsonSubTypes.Type(value = RotorcraftAircraft.class, name = "rotorcraft")
+})
 public abstract class Aircraft implements BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter
     private Long id;
-
+    @Getter
     private String model;
+    @Getter
     private int capacity;
 
-    @Enumerated(EnumType.STRING)
-    @Setter
-    private AircraftType type;
+    private AircraftRole currentRole;
 
-    @Setter
-    private Double cargoCapacity;
+    public Aircraft() {
+    }
 
-    @Setter
-    private String personalizedInterior;
+    public Aircraft(String model, int capacity, AircraftRole currentRole) {
+        this.setModel(model);
+        this.setCapacity(capacity);
+        this.currentRole = currentRole;
+    }
 
-    public Aircraft(String model, int capacity, AircraftType type) {
-        setModel(model);
-        setCapacity(capacity);
-        this.type = type;
+    public AircraftRole getRole() {
+        return this.currentRole;
+    }
+
+    public void setRole(AircraftRole role) {
+        this.currentRole = role;
+    }
+
+    public void prepareForFlight() {
+        System.out.println("Starting standard technical checks for model: " + this.model);
+
+        if (currentRole instanceof CommercialRole commercial) {
+            System.out.println("[ROLE-LOGIC] Performing commercial checks. Cargo capacity set to: " + commercial.getCargoCapacity());
+        } else if (currentRole instanceof PrivateRole privateRole) {
+            System.out.println("[ROLE-LOGIC] Preparing private interior: " + privateRole.getPersonalizedInterior());
+        } else {
+            throw new IllegalStateException("[EXCEPTION] Unknown role, initialize it or change it.");
+        }
+
+        System.out.println("Aircraft is ready for flight.");
+    }
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setModel(String model) {
         if (model == null || model.trim().isEmpty()) {
-            throw new IllegalArgumentException("Aircraft model cannot be empty.");
+            throw new IllegalArgumentException("Model cannot be null or empty.");
         }
         this.model = model;
     }
 
     public void setCapacity(int capacity) {
-        if (capacity <= 0) {
-            throw new IllegalArgumentException("Aircraft capacity must be positive.");
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity cannot be negative. Provided value: " + capacity);
         }
         this.capacity = capacity;
     }
+
+    public abstract String getType();
 }

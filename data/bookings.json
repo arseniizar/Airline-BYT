@@ -1,0 +1,24 @@
+{
+  "1" : {
+    "id" : 1,
+    "paymentMethod" : null,
+    "bookingStatus" : "CONFIRMED",
+    "bookingFee" : 25.00,
+    "totalPrice" : 350.00,
+    "passenger" : {
+      "id" : 1,
+      "firstName" : "John",
+      "lastName" : "Doe",
+      "birthDate" : [ 1990, 5, 15 ],
+      "passengerID" : "JD12345",
+      "email" : "john.doe@example.com",
+      "contactNumber" : "+11234567890",
+      "loyaltyPoints" : 1500,
+      "bookings" : [ ],
+      "type" : "passenger",
+      "age" : 35
+    },
+    "tickets" : [ ],
+    "luggage" : null
+  }
+}

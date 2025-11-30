@@ -1,0 +1,11 @@
+{
+  "1" : {
+    "id" : 1,
+    "iataCode" : "WAW",
+    "name" : "Warsaw Chopin Airport",
+    "location" : {
+      "country" : "Poland",
+      "city" : "Warsaw"
+    }
+  }
+}

@@ -1,8 +1,12 @@
 package com.example.airlinebyt.repositories;
 
 import com.example.airlinebyt.models.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.File;
@@ -14,10 +18,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-/**
- * Generic in-memory repository to manage class extent and persistence to a JSON file.
- * @param <T> The type of the entity, which must extend BaseEntity.
- */
 public abstract class InMemoryRepository<T extends BaseEntity> {
 
     protected final Map<Long, T> extent = new ConcurrentHashMap<>();
@@ -42,7 +42,7 @@ public abstract class InMemoryRepository<T extends BaseEntity> {
             entity.setId(idCounter.incrementAndGet());
         }
         extent.put(entity.getId(), entity);
-        saveToFile(); // Persist changes
+        saveToFile();
         return entity;
     }
 
@@ -56,7 +56,7 @@ public abstract class InMemoryRepository<T extends BaseEntity> {
 
     public void deleteById(Long id) {
         extent.remove(id);
-        saveToFile(); // Persist changes
+        saveToFile();
     }
 
     public long count() {
@@ -77,17 +77,43 @@ public abstract class InMemoryRepository<T extends BaseEntity> {
     }
 
     private void loadFromFile() {
+        System.out.println("Attempting to load data from: " + storageFileName);
         File file = new File(storageFileName);
         if (file.exists() && file.length() > 0) {
             try {
                 Map<Long, T> loadedExtent = objectMapper.readValue(file, typeReference);
-                extent.putAll(loadedExtent);
-                long maxId = loadedExtent.keySet().stream().max(Long::compare).orElse(0L);
-                idCounter.set(maxId);
+                System.out.println("Deserialized " + storageFileName + ". loadedExtent is null: " + (loadedExtent == null));
+
+                if (loadedExtent != null) {
+                    // --- ПОЧАТОК ЗМІН ---
+                    final AtomicLong maxId = new AtomicLong(0);
+
+                    loadedExtent.forEach((id, entity) -> {
+                        if (entity != null) {
+                            extent.put(id, entity);
+                            if (id > maxId.get()) {
+                                maxId.set(id);
+                            }
+                        } else {
+                            // ЦЕ НАЙВАЖЛИВІШИЙ ЛОГ!
+                            System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            System.err.println("WARNING: Found a null entity for ID: " + id + " in file: " + storageFileName);
+                            System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        }
+                    });
+
+                    idCounter.set(maxId.get());
+                    System.out.println("Successfully loaded " + extent.size() + " non-null entities from " + storageFileName);
+                    // --- КІНЕЦЬ ЗМІН ---
+                } else {
+                    System.err.println("WARNING: Deserialization resulted in a null map for " + storageFileName);
+                }
             } catch (IOException e) {
-                System.err.println("Error loading from file: " + storageFileName);
+                System.err.println("ERROR loading from file: " + storageFileName);
                 e.printStackTrace();
             }
+        } else {
+            System.out.println("File not found or is empty, skipping: " + storageFileName);
         }
     }
 }
