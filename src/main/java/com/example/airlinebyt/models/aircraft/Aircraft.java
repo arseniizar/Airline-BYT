@@ -84,4 +84,6 @@ public abstract class Aircraft implements BaseEntity {
         }
         this.capacity = capacity;
     }
+
+    public abstract String getType();
 }

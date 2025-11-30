@@ -1,20 +1,37 @@
 package com.example.airlinebyt.aircraftTests;
 
+
 import com.example.airlinebyt.models.aircraft.FixedWingAircraft;
+import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class FixedWingAircraftTest {
 
     @Test
-    void testFields() {
-        FixedWingAircraft fw = new FixedWingAircraft();
+    void shouldCreateFixedWingAircraftWithValidValues() {
+        CommercialRole role = new CommercialRole(2000);
+        FixedWingAircraft aircraft = new FixedWingAircraft("Boeing 747", 300, 60.0, 14, role);
 
-        fw.setWingLength(36.0);
-        fw.setLandingWheels(6);
+        assertEquals("Boeing 747", aircraft.getModel());
+        assertEquals(300, aircraft.getCapacity());
+        assertEquals(60.0, aircraft.getWingLength());
+        assertEquals(14, aircraft.getLandingWheels());
+        assertEquals(role, aircraft.getRole());
+    }
 
-        assertEquals(36, fw.getWingLength());
-        assertEquals(6, fw.getLandingWheels());
+    @Test
+    void shouldThrowExceptionForInvalidWingLength() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new FixedWingAircraft("Boeing", 200, -1.0, 10, new CommercialRole()));
+    }
+
+    @Test
+    void shouldThrowExceptionForInvalidLandingWheels() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new FixedWingAircraft("Boeing", 200, 20.0, 0, new CommercialRole()));
     }
 }
+
 
