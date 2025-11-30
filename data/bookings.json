@@ -6,7 +6,6 @@
     "bookingFee" : 25.00,
     "totalPrice" : 350.00,
     "passenger" : {
-      "type" : "passenger",
       "id" : 1,
       "firstName" : "John",
       "lastName" : "Doe",
