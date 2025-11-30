@@ -4,13 +4,15 @@ import com.example.airlinebyt.enums.BookingStatus;
 import com.example.airlinebyt.enums.FlightStatus;
 import com.example.airlinebyt.models.aircraft.Aircraft;
 import com.example.airlinebyt.models.aircraft.FixedWingAircraft;
-import com.example.airlinebyt.models.aircraft.roles.AircraftRole;
 import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import com.example.airlinebyt.models.aircraft.roles.PrivateRole;
 import com.example.airlinebyt.models.booking.Booking;
 import com.example.airlinebyt.models.embeddable.Location;
 import com.example.airlinebyt.models.operations.Airport;
+import com.example.airlinebyt.models.operations.Backlog;
 import com.example.airlinebyt.models.operations.Flight;
+import com.example.airlinebyt.models.operations.Issue;
+import com.example.airlinebyt.models.person.Mechanic;
 import com.example.airlinebyt.models.person.Passenger;
 import com.example.airlinebyt.repositories.*;
 import com.example.airlinebyt.services.factories.AircraftFactory;
@@ -34,6 +36,9 @@ public class DataSeeder implements CommandLineRunner {
     private final PassengerRepository passengerRepository;
     private final FlightRepository flightRepository;
     private final BookingRepository bookingRepository;
+    private final MechanicRepository mechanicRepository;
+    private final BacklogRepository backlogRepository;
+    private final IssueRepository issueRepository;
     private final AircraftFactory aircraftFactory;
 
     @Autowired
@@ -42,12 +47,18 @@ public class DataSeeder implements CommandLineRunner {
                       PassengerRepository passengerRepository,
                       FlightRepository flightRepository,
                       BookingRepository bookingRepository,
+                      MechanicRepository mechanicRepository,
+                      BacklogRepository backlogRepository,
+                      IssueRepository issueRepository,
                       AircraftFactory aircraftFactory) {
         this.aircraftRepository = aircraftRepository;
         this.airportRepository = airportRepository;
         this.passengerRepository = passengerRepository;
         this.flightRepository = flightRepository;
         this.bookingRepository = bookingRepository;
+        this.mechanicRepository = mechanicRepository;
+        this.backlogRepository = backlogRepository;
+        this.issueRepository = issueRepository;
         this.aircraftFactory = aircraftFactory;
     }
 
@@ -62,6 +73,8 @@ public class DataSeeder implements CommandLineRunner {
 
             Flight flightLO3921 = loadFlightData(boeing737, waw);
             loadBookingData(johnDoe, flightLO3921);
+
+            loadMaintenanceData(boeing737);
 
             log.info("Finished seeding all data.");
         } else {
@@ -129,5 +142,31 @@ public class DataSeeder implements CommandLineRunner {
         booking.setBookingFee(new BigDecimal("25.00"));
         bookingRepository.save(booking);
         log.info("Saved Booking for passenger ID: {}", passenger.getPassengerID());
+    }
+
+    private void loadMaintenanceData(Aircraft aircraft) {
+        Mechanic mechanic = new Mechanic(
+                "Bob", "Builder", LocalDate.of(1985, 1, 1),
+                LocalDate.of(2010, 6, 1), "Aeronautical Engineering", 75000.0
+        );
+        mechanicRepository.save(mechanic);
+        log.info("Saved Mechanic: {} {}", mechanic.getFirstName(), mechanic.getLastName());
+
+        Backlog backlog = new Backlog(aircraft);
+
+        Issue issue1 = new Issue("Routine engine check required before next flight.", aircraft);
+        issueRepository.save(issue1);
+
+        Issue issue2 = new Issue("Fix landing gear light indicator.", aircraft);
+        issueRepository.save(issue2);
+
+        backlog.addIssue(issue1);
+        backlog.addIssue(issue2);
+        backlogRepository.save(backlog);
+        log.info("Saved Backlog for Aircraft: {}", aircraft.getModel());
+
+        mechanic.assignBacklog(backlog);
+        mechanicRepository.save(mechanic);
+        log.info("Assigned backlog to mechanic {}", mechanic.getFirstName());
     }
 }

@@ -21,7 +21,8 @@ import java.time.Period;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Passenger.class, name = "passenger"),
         @JsonSubTypes.Type(value = Pilot.class, name = "pilot"),
-        @JsonSubTypes.Type(value = CrewMember.class, name = "crew_member")
+        @JsonSubTypes.Type(value = CrewMember.class, name = "crew_member"),
+        @JsonSubTypes.Type(value = Mechanic.class, name = "mechanic")
 })
 public abstract class Person implements BaseEntity {
     @Getter
