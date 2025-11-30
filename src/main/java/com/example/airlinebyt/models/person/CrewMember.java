@@ -11,7 +11,7 @@ import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
-
+@NoArgsConstructor
 public class CrewMember extends Employee implements BaseEntity {
     @Getter
     private Double baseSalary;

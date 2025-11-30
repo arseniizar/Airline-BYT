@@ -1,16 +1,28 @@
 package com.example.airlinebyt.models.person;
 
 import com.example.airlinebyt.models.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.Period;
 
-// I deleted the annotations because they obfuscate the code for now, and implement default getters and setters incorrectly with Lombok
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type",
+        visible = true
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Passenger.class, name = "passenger"),
+        @JsonSubTypes.Type(value = Pilot.class, name = "pilot"),
+        @JsonSubTypes.Type(value = CrewMember.class, name = "crew_member")
+})
 public abstract class Person implements BaseEntity {
     @Getter
     @Setter
@@ -25,7 +37,7 @@ public abstract class Person implements BaseEntity {
     @Getter
     private LocalDate birthDate;
 
-    protected Person() {
+    public Person() {
     }
 
     // Похідний атрибут /age реалізується методом, а не полем в БД

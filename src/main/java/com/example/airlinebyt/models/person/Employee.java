@@ -1,15 +1,17 @@
 package com.example.airlinebyt.models.person;
 
-import com.example.airlinebyt.models.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.Transient;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 import java.time.LocalDate;
 import java.time.Period;
 
-
-public abstract class Employee extends Person implements BaseEntity {
+@NoArgsConstructor
+public abstract class Employee extends Person {
 
     @Getter
     private LocalDate hireDate;

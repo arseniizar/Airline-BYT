@@ -3,16 +3,23 @@ package com.example.airlinebyt.models.operations;
 import com.example.airlinebyt.enums.FlightStatus;
 import com.example.airlinebyt.models.BaseEntity;
 import com.example.airlinebyt.models.aircraft.Aircraft;
+import com.example.airlinebyt.models.aircraft.FixedWingAircraft;
+import com.example.airlinebyt.models.aircraft.RotorcraftAircraft;
 import com.example.airlinebyt.models.person.CrewMember;
 import com.example.airlinebyt.models.person.Pilot;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@NoArgsConstructor
 public class Flight implements BaseEntity {
     @Getter
     @Setter

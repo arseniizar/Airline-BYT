@@ -3,7 +3,6 @@ package com.example.airlinebyt.operationsTests;
 
 
 import com.example.airlinebyt.enums.FlightStatus;
-import com.example.airlinebyt.models.aircraft.Commercial;
 import com.example.airlinebyt.models.embeddable.Location;
 import com.example.airlinebyt.models.operations.Airport;
 import com.example.airlinebyt.models.operations.Flight;

@@ -1,20 +1,23 @@
 package com.example.airlinebyt.models.aircraft;
 
-import com.example.airlinebyt.enums.AircraftType;
-import jakarta.persistence.Entity;
+import com.example.airlinebyt.models.aircraft.roles.AircraftRole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Getter
 @NoArgsConstructor
 public class RotorcraftAircraft extends Aircraft {
 
+    @Getter
     private int amountOfRotors;
+    @Getter
     private Double maxHoverAltitude;
 
-    public RotorcraftAircraft(String model, int capacity, AircraftType type, int amountOfRotors, Double maxHoverAltitude) {
-        super(model, capacity, type);
+    public String getType() {
+        return "rotorcraft";
+    }
+
+    public RotorcraftAircraft(String model, int capacity, int amountOfRotors, Double maxHoverAltitude, AircraftRole role) {
+        super(model, capacity, role);
         setAmountOfRotors(amountOfRotors);
         setMaxHoverAltitude(maxHoverAltitude);
     }
