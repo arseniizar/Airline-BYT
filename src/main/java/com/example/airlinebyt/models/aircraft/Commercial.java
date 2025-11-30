@@ -1,15 +1,19 @@
 package com.example.airlinebyt.models.aircraft;
 
+import com.example.airlinebyt.enums.AircraftType;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@DiscriminatorValue("COMMERCIAL")
+@Getter
 @NoArgsConstructor
-public class Commercial extends  Aircraft {
+public class Commercial extends Aircraft {
 
-    private int capacity;
+    public Commercial(String model, int capacity, Double cargoCapacity) {
+        super(model, capacity, AircraftType.COMMERCIAL);
+        setCargoCapacity(cargoCapacity);
+    }
 }

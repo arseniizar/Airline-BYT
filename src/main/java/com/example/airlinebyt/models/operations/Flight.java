@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-
 public class Flight implements BaseEntity {
     @Getter
     @Setter
