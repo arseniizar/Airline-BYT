@@ -2,8 +2,8 @@
   "1" : {
     "id" : 1,
     "flightNumber" : "LO3921",
-    "expectedDepartureTime" : [ 2025, 12, 10, 15, 0, 21, 48834000 ],
-    "expectedArrivalTime" : [ 2025, 12, 10, 17, 30, 21, 48852000 ],
+    "expectedDepartureTime" : [ 2025, 12, 10, 15, 0, 22, 394458000 ],
+    "expectedArrivalTime" : [ 2025, 12, 10, 17, 30, 22, 394479000 ],
     "actualDepartureTime" : null,
     "actualArrivalTime" : null,
     "status" : "SCHEDULED",
