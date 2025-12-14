@@ -19,134 +19,90 @@ import java.util.Set;
 
 @NoArgsConstructor
 public class Flight implements BaseEntity {
-    @Getter @Setter
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Getter
-    @Column(unique = true)
-    private String flightNumber;
-
+    @Getter @Setter private Long id;
+    @Getter private String flightNumber;
     @Getter private LocalDateTime expectedDepartureTime;
     @Getter private LocalDateTime expectedArrivalTime;
     @Getter @Setter private LocalDateTime actualDepartureTime;
     @Getter @Setter private LocalDateTime actualArrivalTime;
     @Getter private FlightStatus status;
-    @Getter @ManyToOne @JoinColumn(name = "aircraft_id") private Aircraft aircraft;
-
-    // --- ASSOCIATION: Qualified (with Airport) ---
-    @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "origin_airport_id")
-    private Airport origin;
-
-    @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "destination_airport_id")
-    private Airport destination;
-
-    // --- ASSOCIATION: Aggregation (with CrewMember) ---
-    @ManyToMany
-    @JoinTable(name = "flight_crew")
+    @Getter private Aircraft aircraft;
+    @Getter private Airport origin;
+    @Getter private Airport destination;
     private Set<CrewMember> crew = new HashSet<>();
-
-    // --- ASSOCIATION: With Attribute (Pilot + Role) ---
-    @Transient
     private Map<Pilot, String> pilotRoles = new HashMap<>();
-
-    // --- ASSOCIATION: Reflexive ---
     @Getter private Flight previousLeg;
     @Getter private Flight nextLeg;
 
+    // --- ASSOCIATION MANAGEMENT ---
 
-    // --- ASSOCIATION MANAGEMENT: Aggregation (CrewMember) ---
     public void addCrewMember(CrewMember member) {
-        if (member == null) {
-            throw new IllegalArgumentException("Crew member cannot be null.");
+        if (member == null) throw new IllegalArgumentException("Crew member cannot be null.");
+        if (!this.crew.contains(member)) {
+            this.crew.add(member);
+            member.assignToFlight(this);
         }
-        if (this.crew.contains(member)) {
-            return;
-        }
-        this.crew.add(member);
-        member.assignToFlightInternal(this); // Reverse connection
     }
 
     public void removeCrewMember(CrewMember member) {
         if (member != null && this.crew.contains(member)) {
             this.crew.remove(member);
-            member.removeFromFlightInternal(this); // Reverse connection
+            member.removeFromFlight(this);
         }
     }
 
-    public Set<CrewMember> getCrew() {
-        return Collections.unmodifiableSet(crew);
-    }
-
-    // --- ASSOCIATION MANAGEMENT: With Attribute (Pilot + Role) ---
     public void assignPilot(Pilot pilot, String role) {
-        if (pilot == null || role == null || role.isBlank()) {
-            throw new IllegalArgumentException("Pilot and role must be provided.");
+        if (pilot == null || role == null || role.isBlank()) throw new IllegalArgumentException("Pilot and role are required.");
+        if (!this.pilotRoles.containsKey(pilot)) {
+            this.pilotRoles.put(pilot, role);
+            pilot.addFlight(this);
         }
-        if (this.pilotRoles.containsKey(pilot)) {
-            throw new IllegalStateException("This pilot is already assigned to this flight.");
-        }
-        this.pilotRoles.put(pilot, role);
-        pilot.addFlightInternal(this); // Reverse connection
     }
 
     public void unassignPilot(Pilot pilot) {
         if (pilot != null && this.pilotRoles.containsKey(pilot)) {
             this.pilotRoles.remove(pilot);
-            pilot.removeFlightInternal(this); // Reverse connection
+            pilot.removeFlight(this);
         }
     }
 
-    public Map<Pilot, String> getPilotRoles() {
-        return Collections.unmodifiableMap(pilotRoles);
-    }
-
-    public Set<Pilot> getPilots() {
-        return Collections.unmodifiableSet(pilotRoles.keySet());
-    }
-
-    // --- ASSOCIATION MANAGEMENT: Reflexive ---
-    public void setNextLeg(Flight next) {
-        if (next == this) {
-            throw new IllegalArgumentException("A flight cannot be its own next leg.");
-        }
-        if (this.nextLeg != null) {
-            this.nextLeg.previousLeg = null;
-        }
-        this.nextLeg = next;
-        if (next != null && next.previousLeg != this) {
-            next.setPreviousLegInternal(this); // Reverse connection
-        }
-    }
-
-    private void setPreviousLegInternal(Flight prev) {
-        this.previousLeg = prev;
-    }
-
-    // --- ASSOCIATION MANAGEMENT: Qualified (with Airport) ---
     public void setOrigin(Airport origin) {
-        if (origin == null) {
-            throw new IllegalArgumentException("Origin airport cannot be null.");
+        if (origin == null) throw new IllegalArgumentException("Origin airport cannot be null.");
+        if (this.origin == null || !this.origin.equals(origin)) {
+            if (this.origin != null) this.origin.removeDeparture(this);
+            this.origin = origin;
+            this.origin.addDeparture(this);
         }
-        if (this.origin != null && !this.origin.equals(origin)) {
-            this.origin.removeDepartureInternal(this);
-        }
-        this.origin = origin;
-        origin.addDepartureInternal(this); // Reverse connection
     }
+
+    public void setNextLeg(Flight next) {
+        if (next == this) throw new IllegalArgumentException("Flight cannot be its own next leg.");
+        if (this.nextLeg != next) {
+            if (this.nextLeg != null) this.nextLeg.previousLeg = null;
+            this.nextLeg = next;
+            if (next != null) next.setPreviousLeg(this);
+        }
+    }
+
+    private void setPreviousLeg(Flight prev) {
+        if (this.previousLeg != prev) {
+            this.previousLeg = prev;
+            if (prev != null) prev.setNextLeg(this);
+        }
+    }
+
+    // --- GETTERS & STANDARD METHODS ---
+    public Set<CrewMember> getCrew() { return Collections.unmodifiableSet(crew); }
+    public Map<Pilot, String> getPilotRoles() { return Collections.unmodifiableMap(pilotRoles); }
+    public Set<Pilot> getPilots() { return Collections.unmodifiableSet(pilotRoles.keySet()); }
 
     public void setDestination(Airport destination) {
         if (destination == null) {
-            throw new IllegalArgumentException("Destination airport cannot be null.");
+            throw new IllegalArgumentException(this.getClass().getName() + ".destination cannot be empty");
         }
         this.destination = destination;
     }
 
-    // --- Standard class methods ---
     public void setFlightNumber(String flightNumber) {
         if (flightNumber == null  || flightNumber.isEmpty()) {
             throw new  IllegalArgumentException(this.getClass().getName() + ".flightNumber cannot be empty");

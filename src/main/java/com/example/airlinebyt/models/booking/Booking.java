@@ -20,54 +20,43 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 public class Booking implements BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Setter
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
-
-    @Enumerated(EnumType.STRING)
-    private BookingStatus bookingStatus;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+    @Setter @Enumerated(EnumType.STRING) private PaymentMethod paymentMethod;
+    @Enumerated(EnumType.STRING) private BookingStatus bookingStatus;
     private BigDecimal bookingFee;
     private BigDecimal totalPrice;
 
-    // --- ASSOCIATION: Basic (1..*) ---
+    // --- ASSOCIATION: Basic (with Passenger) ---
     @Transient
     private Passenger passenger;
 
-    // --- ASSOCIATION: Composition ---
-    @Setter
+    // --- ASSOCIATION: Composition (with Ticket) ---
     @Transient
     private List<Ticket> tickets = new ArrayList<>();
 
-    @Setter
-    @Transient
-    private Luggage luggage;
+    @Setter @Transient private Luggage luggage;
 
     public Booking(BigDecimal totalPrice, Passenger passenger) {
         setTotalPrice(totalPrice);
-        setPassenger(passenger); // Встановлення зв'язку при створенні
+        setPassenger(passenger);
         this.bookingStatus = BookingStatus.IN_CART;
     }
 
-    // --- ASSOCIATION MANAGEMENT (Passenger) ---
+    // --- ASSOCIATION MANAGEMENT: Passenger ---
     public void setPassenger(Passenger newPassenger) {
-        if (newPassenger == null) {
-            throw new IllegalArgumentException("Booking must be associated with a passenger.");
-        }
         if (this.passenger != null && !this.passenger.equals(newPassenger)) {
-            this.passenger.removeBookingInternal(this);
+            this.passenger.removeBooking(this);
         }
         this.passenger = newPassenger;
-        newPassenger.addBookingInternal(this);
+        if (newPassenger != null && !newPassenger.getBookings().contains(this)) {
+            newPassenger.addBooking(this);
+        }
     }
 
-    // --- ASSOCIATION MANAGEMENT (Composition with Ticket) ---
+    // --- ASSOCIATION MANAGEMENT: Ticket (Composition) ---
     public Ticket createTicket(BigDecimal price, Flight flight, Seat seat) {
         if (price == null || flight == null || seat == null) {
-            throw new IllegalArgumentException("Price, flight, and seat are required to create a ticket.");
+            throw new IllegalArgumentException("Price, flight, and seat are required.");
         }
         String ticketNumber = UUID.randomUUID().toString();
         Ticket newTicket = new Ticket(ticketNumber, price, this, flight, seat);
@@ -76,23 +65,25 @@ public class Booking implements BaseEntity {
     }
 
     public void removeTicket(Ticket ticket) {
-        if (ticket == null || !ticket.getBooking().equals(this)) {
-            throw new IllegalArgumentException("This ticket does not belong to this booking.");
+        if (ticket != null && ticket.getBooking() == this) {
+            this.tickets.remove(ticket);
         }
-        this.tickets.remove(ticket);
     }
 
     public List<Ticket> getTickets() {
         return Collections.unmodifiableList(tickets);
     }
 
+    // --- Standard class methods ---
     @Override
     public void setId(Long id) {
         this.id = id;
     }
 
     public void setBookingStatus(BookingStatus bookingStatus) {
-        if (bookingStatus == null) throw new IllegalArgumentException("Booking status cannot be null.");
+        if (bookingStatus == null) {
+            throw new IllegalArgumentException("Booking status cannot be null.");
+        }
         this.bookingStatus = bookingStatus;
     }
 

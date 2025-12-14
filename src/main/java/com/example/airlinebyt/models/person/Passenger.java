@@ -12,20 +12,12 @@ import java.util.List;
 
 @NoArgsConstructor
 public class Passenger extends Person {
-    @Getter
-    @Column(unique = true)
-    private String passengerID;
+    @Getter @Column(unique = true) private String passengerID;
+    @Getter private String email;
+    @Getter private String contactNumber;
+    @Getter private Integer loyaltyPoints = 0;
 
-    @Getter
-    private String email;
-
-    @Getter
-    private String contactNumber;
-
-    @Getter
-    private Integer loyaltyPoints = 0;
-
-    // --- ASSOCIATION: Basic (1..*) ---
+    // --- ASSOCIATION: Basic (with Booking) ---
     @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();
 
@@ -42,17 +34,26 @@ public class Passenger extends Person {
         return Collections.unmodifiableList(bookings);
     }
 
-    public void addBookingInternal(Booking booking) {
+    public void addBooking(Booking booking) {
+        if (booking == null) throw new IllegalArgumentException("Booking cannot be null.");
         if (!this.bookings.contains(booking)) {
             this.bookings.add(booking);
+            if (booking.getPassenger() != this) {
+                booking.setPassenger(this);
+            }
         }
     }
 
-    public void removeBookingInternal(Booking booking) {
-        this.bookings.remove(booking);
+    public void removeBooking(Booking booking) {
+        if (booking != null && this.bookings.contains(booking)) {
+            this.bookings.remove(booking);
+            if (booking.getPassenger() == this) {
+                booking.setPassenger(null);
+            }
+        }
     }
 
-
+    // --- Standard class methods ---
     public void setPassengerID(String passengerID) {
         if (passengerID == null || passengerID.isEmpty()) {
             throw new IllegalArgumentException(this.getClass().getName() + ".passengerID cannot be empty");

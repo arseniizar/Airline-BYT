@@ -13,14 +13,9 @@ public class Pilot extends Employee {
     @Getter private String licenceNumber;
     @Getter private LocalDate licenceWarranty;
     @Getter private Double baseSalary;
-
-    // --- ASSOCIATION: Reverse connection to Flight ---
     private Set<Flight> flights = new HashSet<>();
 
-    public Pilot(String firstName, String lastName, LocalDate birthDate,
-                 LocalDate hireDate, String education,
-                 String licenceNumber, LocalDate licenceWarranty,
-                 Double baseSalary) {
+    public Pilot(String firstName, String lastName, LocalDate birthDate, LocalDate hireDate, String education, String licenceNumber, LocalDate licenceWarranty, Double baseSalary) {
         super(firstName, lastName, birthDate, hireDate, education);
         setLicenceNumber(licenceNumber);
         setLicenceWarranty(licenceWarranty);
@@ -28,21 +23,27 @@ public class Pilot extends Employee {
     }
 
     // --- ASSOCIATION MANAGEMENT ---
-    public Set<Flight> getFlights() {
-        return Collections.unmodifiableSet(flights);
-    }
-
-    // Internal methods for synchronization with Flight
-    void addFlightInternal(Flight flight) {
+    public void addFlight(Flight flight) {
+        if (flight == null) throw new IllegalArgumentException("Flight cannot be null.");
         if (!this.flights.contains(flight)) {
             this.flights.add(flight);
         }
     }
 
-    void removeFlightInternal(Flight flight) {
-        this.flights.remove(flight);
+    public void removeFlight(Flight flight) {
+        if (flight != null && this.flights.contains(flight)) {
+            this.flights.remove(flight);
+            if(flight.getPilots().contains(this)) {
+                flight.unassignPilot(this);
+            }
+        }
     }
 
+    public Set<Flight> getFlights() {
+        return Collections.unmodifiableSet(flights);
+    }
+
+    // --- Standard class methods ---
     public void setLicenceNumber(String licenceNumber) {
         if (licenceNumber == null || licenceNumber.isEmpty()) {
             throw new IllegalArgumentException(this.getClass().getName() + ".licenceNumber cannot be empty");
