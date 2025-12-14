@@ -1,33 +1,21 @@
 package com.example.airlinebyt.models.person;
 
-import com.example.airlinebyt.models.BaseEntity;
 import com.example.airlinebyt.models.operations.Flight;
-import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
-public class Pilot extends Employee implements BaseEntity {
-    @Getter
-    private String licenceNumber;
+public class Pilot extends Employee {
+    @Getter private String licenceNumber;
+    @Getter private LocalDate licenceWarranty;
+    @Getter private Double baseSalary;
 
-    @Getter
-    private LocalDate licenceWarranty;
-
-    @Getter
-    private Double baseSalary;
-
-    @Getter
-    @ManyToMany(mappedBy = "pilots")
+    // --- ASSOCIATION: Reverse connection to Flight ---
     private Set<Flight> flights = new HashSet<>();
-
-    public String getType() {
-        return "pilot";
-    }
 
     public Pilot(String firstName, String lastName, LocalDate birthDate,
                  LocalDate hireDate, String education,
@@ -39,13 +27,26 @@ public class Pilot extends Employee implements BaseEntity {
         setBaseSalary(baseSalary);
     }
 
+    // --- ASSOCIATION MANAGEMENT ---
+    public Set<Flight> getFlights() {
+        return Collections.unmodifiableSet(flights);
+    }
+
+    // Internal methods for synchronization with Flight
+    void addFlightInternal(Flight flight) {
+        if (!this.flights.contains(flight)) {
+            this.flights.add(flight);
+        }
+    }
+
+    void removeFlightInternal(Flight flight) {
+        this.flights.remove(flight);
+    }
+
     public void setLicenceNumber(String licenceNumber) {
         if (licenceNumber == null || licenceNumber.isEmpty()) {
             throw new IllegalArgumentException(this.getClass().getName() + ".licenceNumber cannot be empty");
         }
-
-        // TODO: Додати перевірку формату номера ліцензії, якщо є конкретні вимоги
-
         this.licenceNumber = licenceNumber;
     }
 
@@ -53,11 +54,9 @@ public class Pilot extends Employee implements BaseEntity {
         if (licenceWarranty == null) {
             throw new IllegalArgumentException(this.getClass().getName() + ".licenceWarranty cannot be empty");
         }
-
         if (licenceWarranty.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException(this.getClass().getName() + ".licenceWarranty cannot be in the past");
         }
-
         this.licenceWarranty = licenceWarranty;
     }
 

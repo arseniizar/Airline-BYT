@@ -3,12 +3,8 @@ package com.example.airlinebyt.models.booking;
 import com.example.airlinebyt.enums.BookingStatus;
 import com.example.airlinebyt.enums.PaymentMethod;
 import com.example.airlinebyt.models.BaseEntity;
-import com.example.airlinebyt.models.person.CrewMember;
+import com.example.airlinebyt.models.operations.Flight;
 import com.example.airlinebyt.models.person.Passenger;
-import com.example.airlinebyt.models.person.Pilot;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,14 +12,14 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Booking implements BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,13 +30,14 @@ public class Booking implements BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private BookingStatus bookingStatus;
-
     private BigDecimal bookingFee;
     private BigDecimal totalPrice;
 
+    // --- ASSOCIATION: Basic (1..*) ---
     @Transient
     private Passenger passenger;
 
+    // --- ASSOCIATION: Composition ---
     @Setter
     @Transient
     private List<Ticket> tickets = new ArrayList<>();
@@ -51,8 +48,42 @@ public class Booking implements BaseEntity {
 
     public Booking(BigDecimal totalPrice, Passenger passenger) {
         setTotalPrice(totalPrice);
-        setPassenger(passenger);
+        setPassenger(passenger); // Встановлення зв'язку при створенні
         this.bookingStatus = BookingStatus.IN_CART;
+    }
+
+    // --- ASSOCIATION MANAGEMENT (Passenger) ---
+    public void setPassenger(Passenger newPassenger) {
+        if (newPassenger == null) {
+            throw new IllegalArgumentException("Booking must be associated with a passenger.");
+        }
+        if (this.passenger != null && !this.passenger.equals(newPassenger)) {
+            this.passenger.removeBookingInternal(this);
+        }
+        this.passenger = newPassenger;
+        newPassenger.addBookingInternal(this);
+    }
+
+    // --- ASSOCIATION MANAGEMENT (Composition with Ticket) ---
+    public Ticket createTicket(BigDecimal price, Flight flight, Seat seat) {
+        if (price == null || flight == null || seat == null) {
+            throw new IllegalArgumentException("Price, flight, and seat are required to create a ticket.");
+        }
+        String ticketNumber = UUID.randomUUID().toString();
+        Ticket newTicket = new Ticket(ticketNumber, price, this, flight, seat);
+        this.tickets.add(newTicket);
+        return newTicket;
+    }
+
+    public void removeTicket(Ticket ticket) {
+        if (ticket == null || !ticket.getBooking().equals(this)) {
+            throw new IllegalArgumentException("This ticket does not belong to this booking.");
+        }
+        this.tickets.remove(ticket);
+    }
+
+    public List<Ticket> getTickets() {
+        return Collections.unmodifiableList(tickets);
     }
 
     @Override
@@ -61,9 +92,7 @@ public class Booking implements BaseEntity {
     }
 
     public void setBookingStatus(BookingStatus bookingStatus) {
-        if (bookingStatus == null) {
-            throw new IllegalArgumentException("Booking status cannot be null.");
-        }
+        if (bookingStatus == null) throw new IllegalArgumentException("Booking status cannot be null.");
         this.bookingStatus = bookingStatus;
     }
 
@@ -80,12 +109,4 @@ public class Booking implements BaseEntity {
         }
         this.totalPrice = totalPrice;
     }
-
-    public void setPassenger(Passenger passenger) {
-        if (passenger == null) {
-            throw new IllegalArgumentException("Passenger cannot be null.");
-        }
-        this.passenger = passenger;
-    }
-
 }
