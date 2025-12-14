@@ -3,12 +3,8 @@ package com.example.airlinebyt.models.booking;
 import com.example.airlinebyt.enums.BookingStatus;
 import com.example.airlinebyt.enums.PaymentMethod;
 import com.example.airlinebyt.models.BaseEntity;
-import com.example.airlinebyt.models.person.CrewMember;
+import com.example.airlinebyt.models.operations.Flight;
 import com.example.airlinebyt.models.person.Passenger;
-import com.example.airlinebyt.models.person.Pilot;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,38 +12,29 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Booking implements BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Setter
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
-
-    @Enumerated(EnumType.STRING)
-    private BookingStatus bookingStatus;
-
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+    @Setter @Enumerated(EnumType.STRING) private PaymentMethod paymentMethod;
+    @Enumerated(EnumType.STRING) private BookingStatus bookingStatus;
     private BigDecimal bookingFee;
     private BigDecimal totalPrice;
 
+    // --- ASSOCIATION: Basic (with Passenger) ---
     @Transient
     private Passenger passenger;
 
-    @Setter
+    // --- ASSOCIATION: Composition (with Ticket) ---
     @Transient
     private List<Ticket> tickets = new ArrayList<>();
 
-    @Setter
-    @Transient
-    private Luggage luggage;
+    @Setter @Transient private Luggage luggage;
 
     public Booking(BigDecimal totalPrice, Passenger passenger) {
         setTotalPrice(totalPrice);
@@ -55,6 +42,39 @@ public class Booking implements BaseEntity {
         this.bookingStatus = BookingStatus.IN_CART;
     }
 
+    // --- ASSOCIATION MANAGEMENT: Passenger ---
+    public void setPassenger(Passenger newPassenger) {
+        if (this.passenger != null && !this.passenger.equals(newPassenger)) {
+            this.passenger.removeBooking(this);
+        }
+        this.passenger = newPassenger;
+        if (newPassenger != null && !newPassenger.getBookings().contains(this)) {
+            newPassenger.addBooking(this);
+        }
+    }
+
+    // --- ASSOCIATION MANAGEMENT: Ticket (Composition) ---
+    public Ticket createTicket(BigDecimal price, Flight flight, Seat seat) {
+        if (price == null || flight == null || seat == null) {
+            throw new IllegalArgumentException("Price, flight, and seat are required.");
+        }
+        String ticketNumber = UUID.randomUUID().toString();
+        Ticket newTicket = new Ticket(ticketNumber, price, this, flight, seat);
+        this.tickets.add(newTicket);
+        return newTicket;
+    }
+
+    public void removeTicket(Ticket ticket) {
+        if (ticket != null && ticket.getBooking() == this) {
+            this.tickets.remove(ticket);
+        }
+    }
+
+    public List<Ticket> getTickets() {
+        return Collections.unmodifiableList(tickets);
+    }
+
+    // --- Standard class methods ---
     @Override
     public void setId(Long id) {
         this.id = id;
@@ -80,12 +100,4 @@ public class Booking implements BaseEntity {
         }
         this.totalPrice = totalPrice;
     }
-
-    public void setPassenger(Passenger passenger) {
-        if (passenger == null) {
-            throw new IllegalArgumentException("Passenger cannot be null.");
-        }
-        this.passenger = passenger;
-    }
-
 }
