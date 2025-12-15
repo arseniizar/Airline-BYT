@@ -2,6 +2,7 @@ package com.example.airlinebyt.models.operations;
 
 import com.example.airlinebyt.models.BaseEntity;
 import com.example.airlinebyt.models.aircraft.Aircraft;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -17,6 +18,7 @@ public class Issue implements BaseEntity {
 
     private boolean isResolved = false;
 
+    @JsonIgnore
     private transient Aircraft source;
 
     public Issue(String description, Aircraft source) {

@@ -2,33 +2,14 @@
   "1" : {
     "id" : 1,
     "flightNumber" : "LO3921",
-    "expectedDepartureTime" : [ 2025, 12, 10, 15, 0, 22, 394458000 ],
-    "expectedArrivalTime" : [ 2025, 12, 10, 17, 30, 22, 394479000 ],
-    "actualDepartureTime" : null,
-    "actualArrivalTime" : null,
+    "expectedDepartureTime" : [ 2025, 12, 25, 15, 0, 54, 962727000 ],
+    "expectedArrivalTime" : [ 2025, 12, 25, 17, 30, 54, 962738000 ],
     "status" : "SCHEDULED",
-    "origin" : {
-      "id" : 1,
-      "iataCode" : "WAW",
-      "name" : "Warsaw Chopin Airport",
-      "location" : {
-        "country" : "Poland",
-        "city" : "Warsaw"
-      }
-    },
-    "destination" : {
-      "id" : 1,
-      "iataCode" : "WAW",
-      "name" : "Warsaw Chopin Airport",
-      "location" : {
-        "country" : "Poland",
-        "city" : "Warsaw"
-      }
-    },
     "aircraft" : {
       "id" : 1,
       "model" : "Boeing 737",
       "capacity" : 189,
+      "baseAirport" : null,
       "wingLength" : 34.3,
       "landingWheels" : 6,
       "type" : "fixed_wing",
@@ -37,7 +18,39 @@
         "cargoCapacity" : 4500.0
       }
     },
-    "pilots" : [ ],
-    "crew" : [ ]
+    "originMetadata" : {
+      "airport" : {
+        "id" : 1,
+        "iataCode" : "WAW",
+        "name" : "Warsaw Chopin Airport",
+        "location" : {
+          "country" : "Poland",
+          "city" : "Warsaw"
+        },
+        "basedAircraft" : [ ],
+        "destinations" : [ ],
+        "origins" : [ ]
+      },
+      "actualDepartureTime" : [ 2025, 12, 15, 18, 36, 54, 962711000 ]
+    },
+    "destinationMetadata" : {
+      "airport" : {
+        "id" : 1,
+        "iataCode" : "WAW",
+        "name" : "Warsaw Chopin Airport",
+        "location" : {
+          "country" : "Poland",
+          "city" : "Warsaw"
+        },
+        "basedAircraft" : [ ],
+        "destinations" : [ ],
+        "origins" : [ ]
+      },
+      "actualArrivalTime" : [ 2025, 12, 15, 18, 36, 54, 962724000 ]
+    },
+    "crew" : [ ],
+    "previousLeg" : null,
+    "nextLeg" : null,
+    "pilots" : [ ]
   }
 }

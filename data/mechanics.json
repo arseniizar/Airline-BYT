@@ -6,52 +6,17 @@
     "birthDate" : [ 1985, 1, 1 ],
     "hireDate" : [ 2010, 6, 1 ],
     "education" : "Aeronautical Engineering",
+    "supervisor" : null,
     "baseSalary" : 75000.0,
     "assignedBacklogs" : [ {
       "id" : 1,
-      "aircraft" : {
-        "id" : 1,
-        "model" : "Boeing 737",
-        "capacity" : 189,
-        "wingLength" : 34.3,
-        "landingWheels" : 6,
-        "type" : "fixed_wing",
-        "role" : {
-          "type" : "commercial",
-          "cargoCapacity" : 4500.0
-        }
-      },
       "listOfIssues" : [ {
         "id" : 1,
         "description" : "Routine engine check required before next flight.",
-        "source" : {
-          "id" : 1,
-          "model" : "Boeing 737",
-          "capacity" : 189,
-          "wingLength" : 34.3,
-          "landingWheels" : 6,
-          "type" : "fixed_wing",
-          "role" : {
-            "type" : "commercial",
-            "cargoCapacity" : 4500.0
-          }
-        },
         "isResolved" : false
       }, {
         "id" : 2,
         "description" : "Fix landing gear light indicator.",
-        "source" : {
-          "id" : 1,
-          "model" : "Boeing 737",
-          "capacity" : 189,
-          "wingLength" : 34.3,
-          "landingWheels" : 6,
-          "type" : "fixed_wing",
-          "role" : {
-            "type" : "commercial",
-            "cargoCapacity" : 4500.0
-          }
-        },
         "isResolved" : false
       } ]
     } ],

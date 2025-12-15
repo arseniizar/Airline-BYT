@@ -1,6 +1,7 @@
 package com.example.airlinebyt.models.person;
 
 import com.example.airlinebyt.models.operations.Flight;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ public class Pilot extends Employee {
     @Getter private String licenceNumber;
     @Getter private LocalDate licenceWarranty;
     @Getter private Double baseSalary;
+    @JsonIgnore
     private final Set<Flight> flights = new HashSet<>();
 
     public Pilot(String firstName, String lastName, LocalDate birthDate, LocalDate hireDate, String education, String licenceNumber, LocalDate licenceWarranty, Double baseSalary) {
@@ -20,6 +22,10 @@ public class Pilot extends Employee {
         setLicenceNumber(licenceNumber);
         setLicenceWarranty(licenceWarranty);
         setBaseSalary(baseSalary);
+    }
+
+    public String getType() {
+        return "pilot";
     }
 
     public void addFlight(Flight flight) {

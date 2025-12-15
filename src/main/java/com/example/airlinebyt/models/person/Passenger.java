@@ -1,6 +1,7 @@
 package com.example.airlinebyt.models.person;
 
 import com.example.airlinebyt.models.booking.Booking;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,12 +19,9 @@ public class Passenger extends Person {
     @Getter private Integer loyaltyPoints = 0;
 
     // --- ASSOCIATION: Basic (with Booking) ---
+    @JsonManagedReference("passenger-bookings")
     @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();
-
-    public String getType() {
-        return "passenger";
-    }
 
     public Passenger(String firstName, String lastName, LocalDate birthDate,
                      String passengerID, String email, String contactNumber) {
