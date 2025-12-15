@@ -1,0 +1,11 @@
+{
+  "1" : {
+    "id" : 1,
+    "paymentMethod" : null,
+    "bookingStatus" : "CONFIRMED",
+    "bookingFee" : 25.00,
+    "totalPrice" : 350.00,
+    "tickets" : [ ],
+    "luggage" : null
+  }
+}

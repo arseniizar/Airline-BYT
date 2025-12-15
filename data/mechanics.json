@@ -1,0 +1,27 @@
+{
+  "1" : {
+    "id" : 1,
+    "firstName" : "Bob",
+    "lastName" : "Builder",
+    "birthDate" : [ 1985, 1, 1 ],
+    "hireDate" : [ 2010, 6, 1 ],
+    "education" : "Aeronautical Engineering",
+    "supervisor" : null,
+    "baseSalary" : 75000.0,
+    "assignedBacklogs" : [ {
+      "id" : 1,
+      "listOfIssues" : [ {
+        "id" : 1,
+        "description" : "Routine engine check required before next flight.",
+        "isResolved" : false
+      }, {
+        "id" : 2,
+        "description" : "Fix landing gear light indicator.",
+        "isResolved" : false
+      } ]
+    } ],
+    "type" : "mechanic",
+    "yearsOfExperience" : 15,
+    "age" : 40
+  }
+}
