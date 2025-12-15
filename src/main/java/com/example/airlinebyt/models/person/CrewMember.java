@@ -15,7 +15,7 @@ public class CrewMember extends Employee {
     private Set<Flight> flights = new HashSet<>();
 
     public CrewMember(String firstName, String lastName, LocalDate birthDate, LocalDate hireDate, String education, Double baseSalary, String position) {
-        super(firstName, lastName, birthDate, hireDate, education);
+        super(firstName, lastName, birthDate, hireDate, education, null);
         setBaseSalary(baseSalary);
         setPosition(position);
     }

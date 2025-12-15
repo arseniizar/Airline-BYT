@@ -1,10 +1,16 @@
 package com.example.airlinebyt.aircraftTests;
 
 
+import com.example.airlinebyt.enums.SeatClass;
 import com.example.airlinebyt.models.aircraft.Aircraft;
+import com.example.airlinebyt.models.aircraft.FixedWingAircraft;
 import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import com.example.airlinebyt.models.aircraft.roles.PrivateRole;
+import com.example.airlinebyt.models.booking.Seat;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AircraftTest {
@@ -88,6 +94,29 @@ class AircraftTest {
         TestAircraft aircraft = new TestAircraft("Model", 10, null);
 
         assertThrows(IllegalStateException.class, aircraft::prepareForFlight);
+    }
+
+    @Test
+    void addSeat_shouldCreateAndContainSeat() {
+        Aircraft aircraft = new FixedWingAircraft("Boeing 737", 189, 34.3, 6, new CommercialRole(4500.0));
+        aircraft.addSeat("1A", SeatClass.BUSINESS);
+        Optional<Seat> seatOptional = aircraft.getSeat("1A");
+
+        assertTrue(seatOptional.isPresent(), "Seat should be created and found.");
+        Seat seat = seatOptional.get();
+        assertEquals("1A", seat.getSeatNumber());
+        assertEquals(SeatClass.BUSINESS, seat.getSeatClass());
+    }
+
+    @Test
+    void addSeat_shouldThrowExceptionForEmptySeatNumberForComposition() {
+        Aircraft aircraft = new FixedWingAircraft("Boeing 737", 189, 34.3, 6, new CommercialRole(4500.0));
+        assertThrows(IllegalArgumentException.class, () -> aircraft.addSeat("  ", SeatClass.ECONOMY));
+    }
+
+    @Test
+    void seatConstructor_shouldThrowExceptionWhenCreatedWithoutAircraft() {
+        assertThrows(IllegalArgumentException.class, () -> new Seat("3C", SeatClass.ECONOMY, null));
     }
 }
 

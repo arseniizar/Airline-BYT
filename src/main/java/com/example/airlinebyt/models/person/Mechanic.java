@@ -21,7 +21,7 @@ public class Mechanic extends Employee {
 
     public Mechanic(String firstName, String lastName, LocalDate birthDate,
                     LocalDate hireDate, String education, Double baseSalary) {
-        super(firstName, lastName, birthDate, hireDate, education);
+        super(firstName, lastName, birthDate, hireDate, education, null);
         setBaseSalary(baseSalary);
     }
 

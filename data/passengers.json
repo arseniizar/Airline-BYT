@@ -9,7 +9,6 @@
     "contactNumber" : "+11234567890",
     "loyaltyPoints" : 1500,
     "bookings" : [ ],
-    "type" : "passenger",
     "age" : 35
   }
 }
