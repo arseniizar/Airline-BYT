@@ -1,17 +1,22 @@
 package com.example.airlinebyt.models.operations;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 public class DestinationMetadata {
     @Getter
+    @JsonBackReference("flight-destination")
     private Flight flight;
     @Getter
     private Airport airport;
 
     @Getter
     private LocalDateTime actualArrivalTime;
+
+    public DestinationMetadata() {
+    }
 
     public DestinationMetadata(Flight flight, Airport airport) {
         this.flight = flight;

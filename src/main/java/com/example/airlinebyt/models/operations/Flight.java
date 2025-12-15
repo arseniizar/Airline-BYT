@@ -6,6 +6,8 @@ import com.example.airlinebyt.models.aircraft.Aircraft;
 import com.example.airlinebyt.models.booking.Ticket;
 import com.example.airlinebyt.models.person.CrewMember;
 import com.example.airlinebyt.models.person.Pilot;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,20 +22,35 @@ import java.util.Set;
 
 @NoArgsConstructor
 public class Flight implements BaseEntity {
-    @Getter @Setter private Long id;
-    @Getter private String flightNumber;
-    @Getter private LocalDateTime expectedDepartureTime;
-    @Getter private LocalDateTime expectedArrivalTime;
-    @Getter private FlightStatus status;
-    @Getter private Aircraft aircraft;
-    @Getter private OriginMetadata originMetadata;
-    @Getter private DestinationMetadata destinationMetadata;
+    @Getter
+    @Setter
+    private Long id;
+    @Getter
+    private String flightNumber;
+    @Getter
+    private LocalDateTime expectedDepartureTime;
+    @Getter
+    private LocalDateTime expectedArrivalTime;
+    @Getter
+    private FlightStatus status;
+    @Getter
+    private Aircraft aircraft;
+    @JsonManagedReference("flight-origin")
+    @Getter
+    private OriginMetadata originMetadata;
+    @JsonManagedReference("flight-destination")
+    @Getter
+    private DestinationMetadata destinationMetadata;
+//    @JsonManagedReference("flight-crew")
     private Set<CrewMember> crew = new HashSet<>();
+    @JsonIgnore
     private Map<Pilot, String> pilotRoles = new HashMap<>();
     // 5. Qualified association
     private Map<String, Ticket> tickets = new HashMap<>();
-    @Getter private Flight previousLeg;
-    @Getter private Flight nextLeg;
+    @Getter
+    private Flight previousLeg;
+    @Getter
+    private Flight nextLeg;
 
 
     public Flight(String flightNumber, LocalDateTime expectedDepartureTime, LocalDateTime expectedArrivalTime, FlightStatus status, Aircraft aircraft, Airport origin, Airport destination) {
@@ -96,7 +113,8 @@ public class Flight implements BaseEntity {
 
 
     public void assignPilot(Pilot pilot, String role) {
-        if (pilot == null || role == null || role.isBlank()) throw new IllegalArgumentException("Pilot and role are required.");
+        if (pilot == null || role == null || role.isBlank())
+            throw new IllegalArgumentException("Pilot and role are required.");
         if (!this.pilotRoles.containsKey(pilot)) {
             this.pilotRoles.put(pilot, role);
             pilot.addFlight(this);
@@ -127,14 +145,22 @@ public class Flight implements BaseEntity {
     }
 
     // --- GETTERS & STANDARD METHODS ---
-    public Set<CrewMember> getCrew() { return Collections.unmodifiableSet(crew); }
-    public Map<Pilot, String> getPilotRoles() { return Collections.unmodifiableMap(pilotRoles); }
-    public Set<Pilot> getPilots() { return Collections.unmodifiableSet(pilotRoles.keySet()); }
+    public Set<CrewMember> getCrew() {
+        return Collections.unmodifiableSet(crew);
+    }
+
+    public Map<Pilot, String> getPilotRoles() {
+        return Collections.unmodifiableMap(pilotRoles);
+    }
+
+    public Set<Pilot> getPilots() {
+        return Collections.unmodifiableSet(pilotRoles.keySet());
+    }
 
 
     public void setFlightNumber(String flightNumber) {
-        if (flightNumber == null  || flightNumber.isEmpty()) {
-            throw new  IllegalArgumentException(this.getClass().getName() + ".flightNumber cannot be empty");
+        if (flightNumber == null || flightNumber.isEmpty()) {
+            throw new IllegalArgumentException(this.getClass().getName() + ".flightNumber cannot be empty");
         }
         this.flightNumber = flightNumber;
     }

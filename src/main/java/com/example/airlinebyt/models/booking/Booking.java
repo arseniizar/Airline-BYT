@@ -5,6 +5,7 @@ import com.example.airlinebyt.enums.PaymentMethod;
 import com.example.airlinebyt.models.BaseEntity;
 import com.example.airlinebyt.models.operations.Flight;
 import com.example.airlinebyt.models.person.Passenger;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class Booking implements BaseEntity {
     private BigDecimal bookingFee;
     private BigDecimal totalPrice;
 
+    @JsonBackReference("passenger-bookings")
     @Transient
     private Passenger passenger;
 
