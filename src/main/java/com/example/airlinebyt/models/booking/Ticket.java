@@ -4,37 +4,31 @@ import com.example.airlinebyt.models.BaseEntity;
 import com.example.airlinebyt.models.operations.Flight;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Entity
 @Getter
-@NoArgsConstructor
 public class Ticket implements BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true)
-    private String ticketNumber;
-
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+    @Column(unique = true) private String ticketNumber;
     private BigDecimal price;
 
-    @Transient
-    private Booking booking;
+    private final Booking booking;
 
-    @Transient
     private Flight flight;
-
-    @Transient
     private Seat seat;
 
-    public Ticket(String ticketNumber, BigDecimal price, Booking booking, Flight flight, Seat seat) {
+    protected Ticket() {
+        this.booking = null;
+    }
+
+    Ticket(String ticketNumber, BigDecimal price, Booking booking, Flight flight, Seat seat) {
+        if (booking == null) {
+            throw new IllegalArgumentException("Ticket must belong to a Booking.");
+        }
+        this.booking = booking;
         setTicketNumber(ticketNumber);
         setPrice(price);
-        setBooking(booking);
         setFlight(flight);
         setSeat(seat);
     }
@@ -56,13 +50,6 @@ public class Ticket implements BaseEntity {
             throw new IllegalArgumentException("Price cannot be null or negative.");
         }
         this.price = price;
-    }
-
-    public void setBooking(Booking booking) {
-        if (booking == null) {
-            throw new IllegalArgumentException("Booking cannot be null.");
-        }
-        this.booking = booking;
     }
 
     public void setFlight(Flight flight) {

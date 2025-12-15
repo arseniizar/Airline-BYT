@@ -1,3 +1,4 @@
+
 package com.example.airlinebyt.models.aircraft;
 
 import com.example.airlinebyt.models.aircraft.roles.AircraftRole;
