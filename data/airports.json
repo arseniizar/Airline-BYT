@@ -6,6 +6,9 @@
     "location" : {
       "country" : "Poland",
       "city" : "Warsaw"
-    }
+    },
+    "basedAircraft" : [ ],
+    "destinations" : [ ],
+    "origins" : [ ]
   }
 }

@@ -7,19 +7,16 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 
-@Entity
 @Getter
 public class Ticket implements BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
     @Column(unique = true) private String ticketNumber;
     private BigDecimal price;
 
-    // --- ASSOCIATION: Composition ---
-    @Transient
     private final Booking booking;
 
-    @Transient private Flight flight;
-    @Transient private Seat seat;
+    private Flight flight;
+    private Seat seat;
 
     protected Ticket() {
         this.booking = null;
@@ -36,7 +33,6 @@ public class Ticket implements BaseEntity {
         setSeat(seat);
     }
 
-    // --- Standard class methods ---
     @Override
     public void setId(Long id) {
         this.id = id;

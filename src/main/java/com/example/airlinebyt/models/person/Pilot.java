@@ -1,6 +1,7 @@
 package com.example.airlinebyt.models.person;
 
 import com.example.airlinebyt.models.operations.Flight;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
@@ -13,21 +14,23 @@ public class Pilot extends Employee {
     @Getter private String licenceNumber;
     @Getter private LocalDate licenceWarranty;
     @Getter private Double baseSalary;
-    private Set<Flight> flights = new HashSet<>();
+    @JsonIgnore
+    private final Set<Flight> flights = new HashSet<>();
 
     public Pilot(String firstName, String lastName, LocalDate birthDate, LocalDate hireDate, String education, String licenceNumber, LocalDate licenceWarranty, Double baseSalary) {
-        super(firstName, lastName, birthDate, hireDate, education);
+        super(firstName, lastName, birthDate, hireDate, education, null);
         setLicenceNumber(licenceNumber);
         setLicenceWarranty(licenceWarranty);
         setBaseSalary(baseSalary);
     }
 
-    // --- ASSOCIATION MANAGEMENT ---
+    public String getType() {
+        return "pilot";
+    }
+
     public void addFlight(Flight flight) {
         if (flight == null) throw new IllegalArgumentException("Flight cannot be null.");
-        if (!this.flights.contains(flight)) {
-            this.flights.add(flight);
-        }
+        this.flights.add(flight);
     }
 
     public void removeFlight(Flight flight) {

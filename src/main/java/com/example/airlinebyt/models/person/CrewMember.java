@@ -1,6 +1,8 @@
 package com.example.airlinebyt.models.person;
 
 import com.example.airlinebyt.models.operations.Flight;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
@@ -8,16 +10,22 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-@NoArgsConstructor
+
 public class CrewMember extends Employee {
     @Getter private Double baseSalary;
     @Getter private String position;
+//    @JsonBackReference("flight-crew")
+    @JsonIgnore
     private Set<Flight> flights = new HashSet<>();
 
     public CrewMember(String firstName, String lastName, LocalDate birthDate, LocalDate hireDate, String education, Double baseSalary, String position) {
-        super(firstName, lastName, birthDate, hireDate, education);
+        super(firstName, lastName, birthDate, hireDate, education, null);
         setBaseSalary(baseSalary);
         setPosition(position);
+    }
+
+    public String getType() {
+        return "crew_member";
     }
 
     // --- ASSOCIATION MANAGEMENT ---

@@ -48,7 +48,7 @@ public class Seat implements BaseEntity {
         this.seatClass = seatClass;
     }
 
-    public void setAircraft(Aircraft aircraft) {
+    private void setAircraft(Aircraft aircraft) {
         if (aircraft == null) {
             throw new IllegalArgumentException("Aircraft cannot be null.");
         }

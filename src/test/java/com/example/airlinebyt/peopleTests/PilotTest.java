@@ -47,8 +47,8 @@ class PilotTest {
         Flight f1 = new Flight();
         Flight f2 = new Flight();
 
-        pilot.getFlights().add(f1);
-        pilot.getFlights().add(f2);
+        pilot.addFlight(f1);
+        pilot.addFlight(f2);
 
         assertEquals(2, pilot.getFlights().size());
         assertTrue(pilot.getFlights().contains(f1));

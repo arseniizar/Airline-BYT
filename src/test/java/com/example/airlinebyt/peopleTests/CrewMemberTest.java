@@ -43,8 +43,8 @@ class CrewMemberTest {
         Flight f1 = new Flight();
         Flight f2 = new Flight();
 
-        c.getFlights().add(f1);
-        c.getFlights().add(f2);
+        c.assignToFlight(f1);
+        c.assignToFlight(f2);
 
         assertEquals(2, c.getFlights().size());
         assertTrue(c.getFlights().contains(f1));

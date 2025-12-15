@@ -2,6 +2,7 @@ package com.example.airlinebyt.models.operations;
 
 import com.example.airlinebyt.models.BaseEntity;
 import com.example.airlinebyt.models.aircraft.Aircraft;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ public class Backlog implements BaseEntity {
 
     private Long id;
 
+    @JsonIgnore
     private Aircraft aircraft;
 
     private List<Issue> listOfIssues = new ArrayList<>();

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 
 @Component
 public class DataSeeder implements CommandLineRunner {
@@ -137,7 +138,7 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void loadBookingData(Passenger passenger, Flight flight) {
-        Booking booking = new Booking(new BigDecimal("350.00"), passenger);
+        Booking booking = new Booking(new BigDecimal("350.00"), passenger, new HashSet<>());
         booking.setBookingStatus(BookingStatus.CONFIRMED);
         booking.setBookingFee(new BigDecimal("25.00"));
         bookingRepository.save(booking);
