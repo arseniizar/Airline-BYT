@@ -1,11 +1,15 @@
 package com.example.airlinebyt.bookingTests;
 
+import com.example.airlinebyt.enums.FlightStatus;
+import com.example.airlinebyt.enums.SeatClass;
 import com.example.airlinebyt.models.aircraft.Aircraft;
 import com.example.airlinebyt.models.aircraft.FixedWingAircraft;
 import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import com.example.airlinebyt.models.booking.Booking;
 import com.example.airlinebyt.models.booking.Seat;
 import com.example.airlinebyt.models.booking.Ticket;
+import com.example.airlinebyt.models.embeddable.Location;
+import com.example.airlinebyt.models.operations.Airport;
 import com.example.airlinebyt.models.operations.Flight;
 import com.example.airlinebyt.models.person.Passenger;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +29,8 @@ class TicketTest {
     private Flight flight;
     private Seat seat;
     private Ticket ticket;
+    private Airport waw;
+    private Airport jfk;
 
     @BeforeEach
     void setUp() {
@@ -35,9 +41,12 @@ class TicketTest {
 
         Aircraft aircraft = new FixedWingAircraft("Test Plane", 1, 10.0, 2, null);
 
+        waw = new Airport("WAW", "Warsaw", new Location("PL", "Warsaw"));
+        jfk = new Airport("JFK", "New York", new Location("US", "NY"));
+
         booking = new Booking(new BigDecimal("500.00"), passenger, new HashSet<>());
-        flight = new Flight("FL987", LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(2).plusHours(3), null, null, null, null);
-        seat = new Seat("7G", null, aircraft);
+        flight = new Flight("FL987", LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(2).plusHours(3), FlightStatus.SCHEDULED, aircraft, waw, jfk);
+        seat = new Seat("7G", SeatClass.ECONOMY, aircraft);
 
         String ticketNumber = UUID.randomUUID().toString();
         BigDecimal price = new BigDecimal("400");
@@ -47,7 +56,7 @@ class TicketTest {
 
     @Test
     void testTicketFieldsAfterCreation() {
-        assertNotNull(ticket.getId(), "ID має бути згенерований, якщо у вас є така логіка, інакше він буде null.");
+        assertNull(ticket.getId(), "ID should be null as the repository's save method was not called.");
         assertNotNull(ticket.getTicketNumber(), "Ticket number should be generated and not null.");
         assertEquals(new BigDecimal("400"), ticket.getPrice(), "Price should match the one provided during creation.");
 
@@ -62,7 +71,7 @@ class TicketTest {
         ticket.setPrice(newPrice);
         assertEquals(newPrice, ticket.getPrice(), "Price should be updatable.");
 
-        Seat newSeat = new Seat("8A", null, flight.getAircraft());
+        Seat newSeat = new Seat("8A", SeatClass.ECONOMY, flight.getAircraft());
         ticket.setSeat(newSeat);
         assertSame(newSeat, ticket.getSeat(), "Seat should be updatable.");
     }

@@ -48,8 +48,8 @@ class PassengerTest {
         Booking b1 = new Booking();
         Booking b2 = new Booking();
 
-        p.getBookings().add(b1);
-        p.getBookings().add(b2);
+        p.addBooking(b1);
+        p.addBooking(b2);
 
         assertEquals(2, p.getBookings().size());
         assertTrue(p.getBookings().contains(b1));

@@ -49,6 +49,6 @@ class AircraftRoleTest {
         AircraftRole role = mapper.readValue(json, AircraftRole.class);
 
         assertInstanceOf(PrivateRole.class, role);
-        assertEquals("yes", ((PrivateRole) role).getPersonalizedInterior());
+        assertEquals("Yes", ((PrivateRole) role).getPersonalizedInterior());
     }
 }
