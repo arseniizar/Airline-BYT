@@ -17,10 +17,15 @@ public abstract class Employee extends Person implements BaseEntity {
     @Getter
     private String education;
 
-    public Employee(String firstName, String lastName, LocalDate birthDate, LocalDate hireDate, String education) {
+    // 4. Reflexive Association
+    @Getter
+    private Employee supervisor;
+
+    public Employee(String firstName, String lastName, LocalDate birthDate, LocalDate hireDate, String education, Employee supervisor) {
         super(firstName, lastName, birthDate);
         setHireDate(hireDate);
         setEducation(education);
+        setSupervisor(supervisor);
     }
 
     @Transient
@@ -48,6 +53,13 @@ public abstract class Employee extends Person implements BaseEntity {
             throw new IllegalArgumentException(this.getClass().getName() + ".education cannot be empty");
         }
         this.education = education;
+    }
+
+    public void setSupervisor(Employee supervisor) {
+        if (supervisor == this) {
+            throw new IllegalArgumentException("An employee cannot supervise themselves.");
+        }
+        this.supervisor = supervisor;
     }
 
     public void setId(Long id) {
