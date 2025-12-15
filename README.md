@@ -4,9 +4,9 @@
 
 ## Setup
 
-*   **JDK:** Amazon Corretto JDK 24
+*   **JDK:** Amazon Corretto JDK 21
+*   **Framework:** Spring Boot 3
 *   **Build Tool:** Gradle
-*   **Virtual Environment:** python venv 
 *   **Branch Naming Convention:** `YOUR_NAME/dev`
     *   *Example:* `arsenii/dev`
 
@@ -16,30 +16,36 @@
 
 ### 1. Basic Association (1..*)
 
-*   **Classes:** `Passenger` <-> `Booking`
-*   **Description:** A `Passenger` can have multiple `Booking` objects, while each `Booking` must belong to exactly one `Passenger`. The relationship is managed through methods that synchronize the link on both sides.
+*   **Classes:** `Passenger` ↔ `Booking`
+*   **Implementation:** A `Passenger` can have multiple (`*`) `Booking` objects, while each `Booking` belongs to exactly one (`1`) `Passenger`.
+*   **Details:** The `Passenger` class contains a `List<Booking>`. The association is managed bidirectionally through `addBooking()` and `removeBooking()` methods in the `Passenger` class and a `setPassenger()` method in the `Booking` class, ensuring that both sides of the relationship are always synchronized.
 
 ### 2. Composition
 
-*   **Classes:** `Booking` <-> `Ticket`
-*   **Description:** A `Ticket` is an integral part of a `Booking`. It cannot exist independently and is created exclusively through a `Booking` instance's `createTicket()` method. Deleting the `Booking` implies the removal of its associated `Ticket` objects.
+*   **Classes:** `Aircraft` → `Seat`
+*   **Implementation:** A `Seat` is an integral part of an `Aircraft`. It cannot exist independently.
+*   **Details:** The `Aircraft` class contains a `Set<Seat>`. `Seat` objects are created exclusively through the `Aircraft.addSeat()` method, which requires an instance of the `Aircraft` in its constructor, enforcing the composition relationship. A `Seat` cannot be transferred from one `Aircraft` to another.
 
 ### 3. Aggregation
 
-*   **Classes:** `Flight` <-> `CrewMember`
-*   **Description:** A `Flight` is associated with a team of `CrewMember` objects. Both `Flight` and `CrewMember` entities can exist independently of one another.
+*   **Classes:** `Booking` <>- `Ticket`
+*   **Implementation:** A `Booking` is an aggregation of one or more `Ticket` objects.
+*   **Details:** The `Booking` class contains a `Set<Ticket>`. While `Ticket` objects are created in the context of a `Booking` (via `booking.createTicket()`), their lifecycle is not strictly tied to it in the same way as composition. They represent a "whole-part" relationship where parts can be conceptually separated.
 
 ### 4. Reflexive Association
 
-*   **Classes:** `Flight` <-> `Flight`
-*   **Description:** A `Flight` can be linked to another `Flight` as a `previousLeg` or `nextLeg`, creating a chain of connecting flights. The connection is managed bi-directionally.
+*   **Classes:** `Flight` ↔ `Flight`
+*   **Implementation:** A `Flight` can be linked to another `Flight` as a `previousLeg` or `nextLeg`.
+*   **Details:** This is implemented as a doubly-linked list. The `Flight` class has `previousLeg` and `nextLeg` attributes. The `setNextLeg()` method ensures that the connection is bidirectional, automatically setting the `previousLeg` on the other `Flight` object and breaking any old links.
 
 ### 5. Qualified Association
 
-*   **Classes:** `Airport` <-> `Flight`
-*   **Description:** An `Airport` can efficiently look up a specific departing `Flight` using its unique `flightNumber` as a qualifier. This is implemented using a `Map<String, Flight>` within the `Airport` class.
+*   **Classes:** `Flight` ↔ `Ticket`
+*   **Implementation:** A `Flight` can efficiently look up a specific `Ticket` using its unique `ticketNumber` as a qualifier.
+*   **Details:** This is implemented using a `Map<String, Ticket>` within the `Flight` class, where the key is the `ticketNumber` string. This allows for direct access to a ticket on a flight without iterating through a list.
 
 ### 6. Association with Attribute
 
-*   **Classes:** `Flight` <-> `Pilot`
-*   **Description:** The relationship between a `Flight` and a `Pilot` includes an attribute: the `role` (e.g., "Captain", "First Officer"). This is implemented using a `Map<Pilot, String>` within the `Flight` class, linking each assigned pilot to their specific role for that flight.
+*   **Classes:** `Airport` ↔ `Flight` (via `OriginMetadata` / `DestinationMetadata`)
+*   **Implementation:** The association between a `Flight` and its origin/destination `Airport` has attributes like `actualDepartureTime` and `actualArrivalTime`.
+*   **Details:** This is modeled using association classes: `OriginMetadata` and `DestinationMetadata`. The `Flight` class holds references to these metadata objects, which in turn hold a reference to the `Airport` and the specific attributes of that connection (e.g., the actual time of departure from that specific airport).
