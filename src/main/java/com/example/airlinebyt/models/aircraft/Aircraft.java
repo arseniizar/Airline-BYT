@@ -1,13 +1,21 @@
 package com.example.airlinebyt.models.aircraft;
 
+import com.example.airlinebyt.enums.SeatClass;
 import com.example.airlinebyt.models.BaseEntity;
 import com.example.airlinebyt.models.aircraft.roles.AircraftRole;
 import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import com.example.airlinebyt.models.aircraft.roles.PrivateRole;
+import com.example.airlinebyt.models.booking.Seat;
+import com.example.airlinebyt.models.operations.Airport;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
+import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(
@@ -27,8 +35,14 @@ public abstract class Aircraft implements BaseEntity {
     private String model;
     @Getter
     private int capacity;
-
     private AircraftRole currentRole;
+    @Setter
+    @Getter
+    private Airport baseAirport;
+
+    // 2. Composition association
+    private final Set<Seat> seats = new HashSet<>();
+
 
     public Aircraft() {
     }
@@ -37,6 +51,7 @@ public abstract class Aircraft implements BaseEntity {
         this.setModel(model);
         this.setCapacity(capacity);
         this.currentRole = currentRole;
+        this.baseAirport = null;
     }
 
     public AircraftRole getRole() {
@@ -83,5 +98,24 @@ public abstract class Aircraft implements BaseEntity {
             throw new IllegalArgumentException("Capacity cannot be negative. Provided value: " + capacity);
         }
         this.capacity = capacity;
+    }
+
+    public abstract String getType();
+
+    public void addSeat(String seatNumber, SeatClass seatClass) {
+        if (seatNumber == null || seatNumber.trim().isEmpty()) {
+            throw new IllegalArgumentException("Seat number cannot be empty.");
+        }
+        if (seatClass == null) {
+            throw new IllegalArgumentException("Seat class cannot be null.");
+        }
+        Seat newSeat = new Seat(seatNumber, seatClass, this);
+        this.seats.add(newSeat);
+    }
+
+    public Optional<Seat> getSeat(String seatNumber) {
+        return this.seats.stream()
+                .filter(seat -> seat.getSeatNumber().equals(seatNumber))
+                .findFirst();
     }
 }

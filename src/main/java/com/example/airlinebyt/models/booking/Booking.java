@@ -11,10 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Getter
@@ -26,23 +23,21 @@ public class Booking implements BaseEntity {
     private BigDecimal bookingFee;
     private BigDecimal totalPrice;
 
-    // --- ASSOCIATION: Basic (with Passenger) ---
     @Transient
     private Passenger passenger;
 
-    // --- ASSOCIATION: Composition (with Ticket) ---
-    @Transient
-    private List<Ticket> tickets = new ArrayList<>();
+    // 3. Aggregation association
+    private Set<Ticket> tickets;
 
     @Setter @Transient private Luggage luggage;
 
-    public Booking(BigDecimal totalPrice, Passenger passenger) {
+    public Booking(BigDecimal totalPrice, Passenger passenger, Set<Ticket> tickets) {
         setTotalPrice(totalPrice);
         setPassenger(passenger);
+        setTickets(tickets);
         this.bookingStatus = BookingStatus.IN_CART;
     }
 
-    // --- ASSOCIATION MANAGEMENT: Passenger ---
     public void setPassenger(Passenger newPassenger) {
         if (this.passenger != null && !this.passenger.equals(newPassenger)) {
             this.passenger.removeBooking(this);
@@ -53,7 +48,6 @@ public class Booking implements BaseEntity {
         }
     }
 
-    // --- ASSOCIATION MANAGEMENT: Ticket (Composition) ---
     public Ticket createTicket(BigDecimal price, Flight flight, Seat seat) {
         if (price == null || flight == null || seat == null) {
             throw new IllegalArgumentException("Price, flight, and seat are required.");
@@ -70,9 +64,7 @@ public class Booking implements BaseEntity {
         }
     }
 
-    public List<Ticket> getTickets() {
-        return Collections.unmodifiableList(tickets);
-    }
+    public Set<Ticket> getTickets() { return Collections.unmodifiableSet(tickets); }
 
     // --- Standard class methods ---
     @Override
@@ -99,5 +91,9 @@ public class Booking implements BaseEntity {
             throw new IllegalArgumentException("Total price cannot be null or negative.");
         }
         this.totalPrice = totalPrice;
+    }
+
+    private void setTickets(Set<Ticket> tickets) {
+        this.tickets = tickets != null ? tickets : new HashSet<>();
     }
 }

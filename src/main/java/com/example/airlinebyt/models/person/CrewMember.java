@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-@NoArgsConstructor
+
 public class CrewMember extends Employee {
     @Getter private Double baseSalary;
     @Getter private String position;

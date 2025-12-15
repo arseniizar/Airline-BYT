@@ -1,14 +1,13 @@
 package com.example.airlinebyt.models.operations;
 
 import com.example.airlinebyt.models.BaseEntity;
+import com.example.airlinebyt.models.aircraft.Aircraft;
 import com.example.airlinebyt.models.embeddable.Location;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Collections;
+
+import java.util.*;
 
 @NoArgsConstructor
 public class Airport implements BaseEntity {
@@ -16,7 +15,12 @@ public class Airport implements BaseEntity {
     @Getter private String iataCode;
     @Getter private String name;
     @Getter @Embedded private Location location;
-    private Map<String, Flight> departingFlights = new HashMap<>();
+    // 1. Basic association
+    private final Set<Aircraft> _basedAircraft = new HashSet<>();
+    // 6. Association with attribute
+    private List<OriginMetadata> _origins = new ArrayList<>();
+    private List<DestinationMetadata> _destinations = new ArrayList<>();
+
 
     public Airport(String iataCode, String name, Location location) {
         setIataCode(iataCode);
@@ -24,37 +28,47 @@ public class Airport implements BaseEntity {
         setLocation(location);
     }
 
-    // --- ASSOCIATION MANAGEMENT: Qualified ---
-    public Optional<Flight> findDepartingFlightByNumber(String flightNumber) {
-        if (flightNumber == null || flightNumber.isBlank()) {
-            throw new IllegalArgumentException("Flight number for search cannot be empty.");
+    public void AddBasedAircraft(Aircraft aircraft) {
+        if (aircraft == null) throw new IllegalArgumentException("Aircraft cannot be null.");
+        if (!_basedAircraft.contains(aircraft)) {
+            _basedAircraft.add(aircraft);
+            aircraft.setBaseAirport(this);
         }
-        return Optional.ofNullable(departingFlights.get(flightNumber));
     }
 
-    public void addDeparture(Flight flight) {
-        if (flight == null || flight.getFlightNumber() == null) throw new IllegalArgumentException("Flight and its number are required.");
-        if (!departingFlights.containsKey(flight.getFlightNumber())) {
-            departingFlights.put(flight.getFlightNumber(), flight);
-            if (flight.getOrigin() != this) {
-                flight.setOrigin(this);
+    public void RemoveBasedAircraft(Aircraft aircraft) {
+        if (aircraft != null) {
+            _basedAircraft.remove(aircraft);
+            if (aircraft.getBaseAirport() == this) {
+                aircraft.setBaseAirport(null);
             }
         }
     }
 
-    public void removeDeparture(Flight flight) {
-        if (flight != null && departingFlights.containsKey(flight.getFlightNumber())) {
-            departingFlights.remove(flight.getFlightNumber());
-            // If the flight still points to this airport as origin, we should probably
-            // notify it, but the main logic is in Flight.setOrigin(null)
-        }
+    public Set<Aircraft> getBasedAircraft() {
+        return Collections.unmodifiableSet(_basedAircraft);
     }
 
-    public Map<String, Flight> getDepartingFlights() {
-        return Collections.unmodifiableMap(departingFlights);
+    public void addFlightOrigin(Flight flight) {
+        if (flight == null) throw new IllegalArgumentException("Flight cannot be null.");
+        OriginMetadata originMetadata = flight.setOrigin(this);
+        _origins.add(originMetadata);
     }
 
-    // --- Standard class methods ---
+    public void addFlightDestination(Flight flight) {
+        if (flight == null) throw new IllegalArgumentException("Flight cannot be null.");
+        DestinationMetadata destinationMetadata = flight.setDestination(this);
+        _destinations.add(destinationMetadata);
+    }
+
+    public List<OriginMetadata> getOrigins() {
+        return Collections.unmodifiableList(_origins);
+    }
+
+    public List<DestinationMetadata> getDestinations() {
+        return Collections.unmodifiableList(_destinations);
+    }
+
     @Override
     public void setId(Long id) {
         this.id = id;
