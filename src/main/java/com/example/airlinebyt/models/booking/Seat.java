@@ -19,6 +19,7 @@ public class Seat implements BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private SeatClass seatClass;
+    public static final int MAX_SEAT_NUMBER = 300;
 
     @Transient
     private Aircraft aircraft;

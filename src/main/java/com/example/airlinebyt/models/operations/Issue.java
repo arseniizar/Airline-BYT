@@ -15,6 +15,7 @@ public class Issue implements BaseEntity {
 
     private Long id;
     private String description;
+    public static final int MAX_DESCRIPTION_LENGTH = 670;
 
     private boolean isResolved = false;
 

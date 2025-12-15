@@ -17,6 +17,7 @@ public class CrewMember extends Employee {
 //    @JsonBackReference("flight-crew")
     @JsonIgnore
     private Set<Flight> flights = new HashSet<>();
+    public static final int MAX_FLIGHTS_PER_DAY = 3;
 
     public CrewMember(String firstName, String lastName, LocalDate birthDate, LocalDate hireDate, String education, Double baseSalary, String position) {
         super(firstName, lastName, birthDate, hireDate, education, null);

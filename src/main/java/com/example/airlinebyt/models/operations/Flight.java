@@ -51,6 +51,7 @@ public class Flight implements BaseEntity {
     private Flight previousLeg;
     @Getter
     private Flight nextLeg;
+    public static final int MAX_FLIGHT_DURATION_HOURS = 18;
 
 
     public Flight(String flightNumber, LocalDateTime expectedDepartureTime, LocalDateTime expectedArrivalTime, FlightStatus status, Aircraft aircraft, Airport origin, Airport destination) {

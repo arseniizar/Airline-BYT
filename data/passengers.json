@@ -1,5 +1,6 @@
 {
   "1" : {
+    "type": "passenger",
     "id" : 1,
     "firstName" : "John",
     "lastName" : "Doe",

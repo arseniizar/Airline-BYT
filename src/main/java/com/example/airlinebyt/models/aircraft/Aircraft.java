@@ -39,6 +39,8 @@ public abstract class Aircraft implements BaseEntity {
     @Setter
     @Getter
     private Airport baseAirport;
+    public static final int MAX_ALLOWED_CAPACITY = 1000; //idk change value if u want
+    public static final int MIN_ALLOWED_CAPACITY= 1000; //idk change value if u want
 
     // 2. Composition association
     private final Set<Seat> seats = new HashSet<>();

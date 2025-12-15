@@ -14,6 +14,7 @@ public class Pilot extends Employee {
     @Getter private String licenceNumber;
     @Getter private LocalDate licenceWarranty;
     @Getter private Double baseSalary;
+    public static final int MAX_LICENCE_YEARS = 35;
     @JsonIgnore
     private final Set<Flight> flights = new HashSet<>();
 

@@ -29,6 +29,7 @@ public class Booking implements BaseEntity {
     private Passenger passenger;
 
     // 3. Aggregation association
+
     private Set<Ticket> tickets;
 
     @Setter @Transient private Luggage luggage;
