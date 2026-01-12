@@ -2,7 +2,6 @@ package com.example.airlinebyt.operationsTests;
 
 import com.example.airlinebyt.enums.FlightStatus;
 import com.example.airlinebyt.models.aircraft.Aircraft;
-import com.example.airlinebyt.models.aircraft.FixedWingAircraft;
 import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import com.example.airlinebyt.models.embeddable.Location;
 import com.example.airlinebyt.models.operations.Airport;

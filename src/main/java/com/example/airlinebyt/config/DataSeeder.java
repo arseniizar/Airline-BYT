@@ -3,7 +3,6 @@ package com.example.airlinebyt.config;
 import com.example.airlinebyt.enums.BookingStatus;
 import com.example.airlinebyt.enums.FlightStatus;
 import com.example.airlinebyt.models.aircraft.Aircraft;
-import com.example.airlinebyt.models.aircraft.FixedWingAircraft;
 import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import com.example.airlinebyt.models.aircraft.roles.PrivateRole;
 import com.example.airlinebyt.models.booking.Booking;

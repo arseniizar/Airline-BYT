@@ -1,7 +1,5 @@
 package com.example.airlinebyt.services.factories;
 
-import com.example.airlinebyt.models.aircraft.FixedWingAircraft;
-import com.example.airlinebyt.models.aircraft.RotorcraftAircraft;
 import com.example.airlinebyt.models.aircraft.roles.AircraftRole;
 import org.springframework.stereotype.Component;
 
