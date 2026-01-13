@@ -1,30 +1,22 @@
 package com.example.airlinebyt.operationsTests;
 
+import com.example.airlinebyt.enums.ConstructionType;
 import com.example.airlinebyt.enums.FlightStatus;
+import com.example.airlinebyt.enums.RoleType;
 import com.example.airlinebyt.models.aircraft.Aircraft;
-import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import com.example.airlinebyt.models.embeddable.Location;
 import com.example.airlinebyt.models.operations.Airport;
 import com.example.airlinebyt.models.operations.Flight;
 import com.example.airlinebyt.models.person.Pilot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class FlightTest {
-
-    static class TestAircraft extends Aircraft {
-        public TestAircraft() {
-            super("A320", 180, new CommercialRole(700));
-        }
-
-        @Override
-        public String getType() {
-            return "fixed_wing";
-        }
-    }
 
     @Test
     void shouldSetValidFlightNumber() {
@@ -95,7 +87,8 @@ class FlightTest {
     @Test
     void shouldSetAircraft() {
         Flight flight = new Flight();
-        Aircraft ac = new TestAircraft();
+        // Оновлене створення
+        Aircraft ac = new Aircraft("A320", 180, ConstructionType.FIXED_WING, RoleType.COMMERCIAL);
         flight.setAircraft(ac);
         assertSame(ac, flight.getAircraft());
     }
@@ -128,7 +121,11 @@ class FlightTest {
     void setUpForAssociationTests() {
         waw = new Airport("WAW", "Warsaw Chopin", new Location("Poland", "Warsaw"));
         jfk = new Airport("JFK", "John F. Kennedy", new Location("USA", "New York"));
-        aircraftForTest = new FixedWingAircraft("Boeing 787", 290, 60.1, 10, new CommercialRole(10000.0));
+
+        // Оновлене створення літака для асоціацій
+        aircraftForTest = new Aircraft("Boeing 787", 290, ConstructionType.FIXED_WING, RoleType.COMMERCIAL);
+        aircraftForTest.setFixedWingAttributes(60.1, 10);
+        aircraftForTest.setCommercialAttributes(10000.0);
 
         LocalDateTime departureTime1 = LocalDateTime.now().plusDays(10);
         flight1 = new Flight("LO001", departureTime1, departureTime1.plusHours(8), FlightStatus.SCHEDULED, aircraftForTest, waw, jfk);
