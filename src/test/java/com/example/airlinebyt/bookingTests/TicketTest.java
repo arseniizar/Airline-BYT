@@ -1,9 +1,10 @@
 package com.example.airlinebyt.bookingTests;
 
+import com.example.airlinebyt.enums.ConstructionType;
 import com.example.airlinebyt.enums.FlightStatus;
+import com.example.airlinebyt.enums.RoleType;
 import com.example.airlinebyt.enums.SeatClass;
 import com.example.airlinebyt.models.aircraft.Aircraft;
-import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import com.example.airlinebyt.models.booking.Booking;
 import com.example.airlinebyt.models.booking.Seat;
 import com.example.airlinebyt.models.booking.Ticket;
@@ -38,7 +39,8 @@ class TicketTest {
                 "TP123", "test@test.com", "+123456789"
         );
 
-        Aircraft aircraft = new FixedWingAircraft("Test Plane", 1, 10.0, 2, null);
+        // Оновлене створення
+        Aircraft aircraft = new Aircraft("Test Plane", 1, ConstructionType.FIXED_WING, RoleType.PRIVATE);
 
         waw = new Airport("WAW", "Warsaw", new Location("PL", "Warsaw"));
         jfk = new Airport("JFK", "New York", new Location("US", "NY"));

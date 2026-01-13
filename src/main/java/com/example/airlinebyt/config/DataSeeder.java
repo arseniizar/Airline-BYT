@@ -1,10 +1,10 @@
 package com.example.airlinebyt.config;
 
 import com.example.airlinebyt.enums.BookingStatus;
+import com.example.airlinebyt.enums.ConstructionType;
 import com.example.airlinebyt.enums.FlightStatus;
+import com.example.airlinebyt.enums.RoleType;
 import com.example.airlinebyt.models.aircraft.Aircraft;
-import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
-import com.example.airlinebyt.models.aircraft.roles.PrivateRole;
 import com.example.airlinebyt.models.booking.Booking;
 import com.example.airlinebyt.models.embeddable.Location;
 import com.example.airlinebyt.models.operations.Airport;
@@ -14,7 +14,6 @@ import com.example.airlinebyt.models.operations.Issue;
 import com.example.airlinebyt.models.person.Mechanic;
 import com.example.airlinebyt.models.person.Passenger;
 import com.example.airlinebyt.repositories.*;
-import com.example.airlinebyt.services.factories.AircraftFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,6 @@ public class DataSeeder implements CommandLineRunner {
     private final MechanicRepository mechanicRepository;
     private final BacklogRepository backlogRepository;
     private final IssueRepository issueRepository;
-    private final AircraftFactory aircraftFactory;
 
     @Autowired
     public DataSeeder(AircraftRepository aircraftRepository,
@@ -49,8 +47,7 @@ public class DataSeeder implements CommandLineRunner {
                       BookingRepository bookingRepository,
                       MechanicRepository mechanicRepository,
                       BacklogRepository backlogRepository,
-                      IssueRepository issueRepository,
-                      AircraftFactory aircraftFactory) {
+                      IssueRepository issueRepository) {
         this.aircraftRepository = aircraftRepository;
         this.airportRepository = airportRepository;
         this.passengerRepository = passengerRepository;
@@ -59,7 +56,6 @@ public class DataSeeder implements CommandLineRunner {
         this.mechanicRepository = mechanicRepository;
         this.backlogRepository = backlogRepository;
         this.issueRepository = issueRepository;
-        this.aircraftFactory = aircraftFactory;
     }
 
     @Override
@@ -83,21 +79,21 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private Aircraft loadAircraftData() {
-        FixedWingAircraft boeing737 = aircraftFactory.createFixedWingAircraft(
-                "Boeing 737", 189, 34.3, 6, new CommercialRole(4500.0)
-        );
+        Aircraft boeing737 = new Aircraft("Boeing 737", 189, ConstructionType.FIXED_WING, RoleType.COMMERCIAL);
+        boeing737.setFixedWingAttributes(34.3, 6);
+        boeing737.setCommercialAttributes(4500.0);
         aircraftRepository.save(boeing737);
         log.info("Saved Commercial Aircraft: {}", boeing737.getModel());
 
-        Aircraft bell407 = aircraftFactory.createRotorcraftAircraft(
-                "Bell 407", 6, 4, 3500.0, new PrivateRole("VIP leather interior and minibar")
-        );
+        Aircraft bell407 = new Aircraft("Bell 407", 6, ConstructionType.ROTORCRAFT, RoleType.PRIVATE);
+        bell407.setRotorcraftAttributes(4, 3500.0);
+        bell407.setPrivateAttributes("VIP leather interior and minibar");
         aircraftRepository.save(bell407);
         log.info("Saved Private Aircraft: {}", bell407.getModel());
 
-        Aircraft cessna172 = aircraftFactory.createFixedWingAircraft(
-                "Cessna 172 Skyhawk", 4, 11.0, 3, null
-        );
+        Aircraft cessna172 = new Aircraft("Cessna 172 Skyhawk", 4, ConstructionType.FIXED_WING, RoleType.PRIVATE);
+        cessna172.setFixedWingAttributes(11.0, 3);
+        cessna172.setPrivateAttributes("Standard training interior");
         aircraftRepository.save(cessna172);
         log.info("Saved training Aircraft: {}", cessna172.getModel());
 
