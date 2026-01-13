@@ -3,7 +3,6 @@ package com.example.airlinebyt.aircraftTests;
 
 import com.example.airlinebyt.enums.SeatClass;
 import com.example.airlinebyt.models.aircraft.Aircraft;
-import com.example.airlinebyt.models.aircraft.FixedWingAircraft;
 import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import com.example.airlinebyt.models.aircraft.roles.PrivateRole;
 import com.example.airlinebyt.models.booking.Seat;

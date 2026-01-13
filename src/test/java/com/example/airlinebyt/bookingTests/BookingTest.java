@@ -5,7 +5,6 @@ import com.example.airlinebyt.enums.FlightStatus;
 import com.example.airlinebyt.enums.PaymentMethod;
 import com.example.airlinebyt.enums.SeatClass;
 import com.example.airlinebyt.models.aircraft.Aircraft;
-import com.example.airlinebyt.models.aircraft.FixedWingAircraft;
 import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import com.example.airlinebyt.models.booking.Booking;
 import com.example.airlinebyt.models.booking.Luggage;

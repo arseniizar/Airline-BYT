@@ -2,7 +2,6 @@ package com.example.airlinebyt.aircraftTests;
 
 
 
-import com.example.airlinebyt.models.aircraft.RotorcraftAircraft;
 import com.example.airlinebyt.models.aircraft.roles.PrivateRole;
 import org.junit.jupiter.api.Test;
 
