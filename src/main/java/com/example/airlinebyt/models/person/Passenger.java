@@ -12,20 +12,21 @@ import java.util.Collections;
 import java.util.List;
 
 @NoArgsConstructor
-public class Passenger extends Person {
+public class Passenger implements PersonType {
     @Getter @Column(unique = true) private String passengerID;
     @Getter private String email;
     @Getter private String contactNumber;
     @Getter private Integer loyaltyPoints = 0;
+    @Getter private Person person;
 
     // --- ASSOCIATION: Basic (with Booking) ---
     @JsonManagedReference("passenger-bookings")
     @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();
 
-    public Passenger(String firstName, String lastName, LocalDate birthDate,
+    public Passenger(Person person,
                      String passengerID, String email, String contactNumber) {
-        super(firstName, lastName, birthDate);
+        setPerson(person);
         setPassengerID(passengerID);
         setEmail(email);
         setContactNumber(contactNumber);
@@ -85,6 +86,11 @@ public class Passenger extends Person {
         this.contactNumber = contactNumber;
     }
 
+    private void setPerson(Person person) {
+        this.person = person;
+        person.addType(this);
+    }
+
     public void addLoyaltyPoints(int points) {
         if (points < 0) {
             throw new IllegalArgumentException(this.getClass().getName() + ".points to add cannot be negative");
@@ -104,5 +110,9 @@ public class Passenger extends Person {
 
     public void printLoyaltyPoints() {
         System.out.println("Current loyalty points: " + this.loyaltyPoints);
+    }
+
+    public void destroy() {
+
     }
 }

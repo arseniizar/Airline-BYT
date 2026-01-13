@@ -11,7 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class Mechanic extends Employee {
-
     private Double baseSalary;
     private List<Backlog> assignedBacklogs = new ArrayList<>();
 
@@ -19,11 +18,12 @@ public class Mechanic extends Employee {
         return "mechanic";
     }
 
-    public Mechanic(String firstName, String lastName, LocalDate birthDate,
-                    LocalDate hireDate, String education, Double baseSalary) {
-        super(firstName, lastName, birthDate, hireDate, education, null);
+    public Mechanic(Person person, LocalDate hireDate, String education, Employee supervisor,
+                    Double baseSalary) {
+        super(person, hireDate, education, supervisor);
         setBaseSalary(baseSalary);
     }
+
 
     public void setBaseSalary(Double baseSalary) {
         if (baseSalary == null || baseSalary < 0) {

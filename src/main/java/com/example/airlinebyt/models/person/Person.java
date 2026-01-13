@@ -10,6 +10,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.HashSet;
+import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(
@@ -24,7 +26,7 @@ import java.time.Period;
         @JsonSubTypes.Type(value = CrewMember.class, name = "crew_member"),
         @JsonSubTypes.Type(value = Mechanic.class, name = "mechanic")
 })
-public abstract class Person implements BaseEntity {
+public class Person implements BaseEntity {
     @Getter
     @Setter
     @Id
@@ -37,6 +39,8 @@ public abstract class Person implements BaseEntity {
     private String lastName;
     @Getter
     private LocalDate birthDate;
+
+    private Set<PersonType> types = new HashSet<>();
 
     public Person() {
     }
@@ -80,5 +84,21 @@ public abstract class Person implements BaseEntity {
         }
 
         this.birthDate = birthDate;
+    }
+
+    public void addType(PersonType type) {
+        if (type == null) {
+            throw new IllegalArgumentException(this.getClass().getName() + ".type cannot be null");
+        }
+
+        this.types.add(type);
+    }
+
+    public void removeType(PersonType type) {
+        if (type == null) {
+            throw new IllegalArgumentException(this.getClass().getName() + ".type cannot be null");
+        }
+
+        this.types.remove(type);
     }
 }

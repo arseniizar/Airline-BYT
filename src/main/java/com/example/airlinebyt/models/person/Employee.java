@@ -5,13 +5,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 import java.time.LocalDate;
 import java.time.Period;
 
 @NoArgsConstructor
-public abstract class Employee extends Person {
+public abstract class Employee implements PersonType {
 
     @Getter
     private LocalDate hireDate;
@@ -19,12 +20,16 @@ public abstract class Employee extends Person {
     @Getter
     private String education;
 
+    @Getter
+    private Person person;
+
+
     // 4. Reflexive Association
     @Getter
     private Employee supervisor;
 
-    public Employee(String firstName, String lastName, LocalDate birthDate, LocalDate hireDate, String education, Employee supervisor) {
-        super(firstName, lastName, birthDate);
+    public Employee(Person person, LocalDate hireDate, String education, Employee supervisor) {
+        setPerson(person);
         setHireDate(hireDate);
         setEducation(education);
         setSupervisor(supervisor);
@@ -64,7 +69,9 @@ public abstract class Employee extends Person {
         this.supervisor = supervisor;
     }
 
-    public void setId(Long id) {
-        super.setId(id);
+    private void setPerson(Person person) {
+        this.person = person;
+        person.addType(this);
     }
+
 }

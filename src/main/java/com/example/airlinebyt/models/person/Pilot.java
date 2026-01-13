@@ -17,8 +17,9 @@ public class Pilot extends Employee {
     @JsonIgnore
     private final Set<Flight> flights = new HashSet<>();
 
-    public Pilot(String firstName, String lastName, LocalDate birthDate, LocalDate hireDate, String education, String licenceNumber, LocalDate licenceWarranty, Double baseSalary) {
-        super(firstName, lastName, birthDate, hireDate, education, null);
+    public Pilot(Person person, LocalDate hireDate, String education, Employee supervisor,
+                 String licenceNumber, LocalDate licenceWarranty, Double baseSalary) {
+        super(person, hireDate, education, supervisor);
         setLicenceNumber(licenceNumber);
         setLicenceWarranty(licenceWarranty);
         setBaseSalary(baseSalary);
