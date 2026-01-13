@@ -1,11 +1,12 @@
 package com.example.airlinebyt.bookingTests;
 
 import com.example.airlinebyt.enums.BookingStatus;
+import com.example.airlinebyt.enums.ConstructionType;
 import com.example.airlinebyt.enums.FlightStatus;
 import com.example.airlinebyt.enums.PaymentMethod;
+import com.example.airlinebyt.enums.RoleType;
 import com.example.airlinebyt.enums.SeatClass;
 import com.example.airlinebyt.models.aircraft.Aircraft;
-import com.example.airlinebyt.models.aircraft.roles.CommercialRole;
 import com.example.airlinebyt.models.booking.Booking;
 import com.example.airlinebyt.models.booking.Luggage;
 import com.example.airlinebyt.models.booking.Seat;
@@ -44,7 +45,9 @@ class BookingTest {
         waw = new Airport("WAW", "Warsaw", new Location("PL", "Warsaw"));
         jfk = new Airport("JFK", "New York", new Location("US", "NY"));
 
-        aircraft = new FixedWingAircraft("Test Model", 100, 30.0, 4, new CommercialRole(1000.0));
+        // Оновлене створення
+        aircraft = new Aircraft("Test Model", 100, ConstructionType.FIXED_WING, RoleType.COMMERCIAL);
+
         flight = new Flight("FL123", LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(1).plusHours(2), FlightStatus.SCHEDULED, aircraft, waw, jfk);
 
         seat1 = new Seat("1A", SeatClass.ECONOMY, aircraft);

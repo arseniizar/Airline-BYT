@@ -23,17 +23,13 @@ public class Aircraft implements BaseEntity {
     private String model;
     @Getter
     private int capacity;
-
-    @Setter
     @Getter
+    @Setter
     private Airport baseAirport;
 
     @Getter
-    @Setter
     private ConstructionType constructionType;
-
     @Getter
-    @Setter
     private RoleType roleType;
 
     private Double wingLength;
@@ -54,79 +50,78 @@ public class Aircraft implements BaseEntity {
     public Aircraft(String model, int capacity, ConstructionType constructionType, RoleType roleType) {
         setModel(model);
         setCapacity(capacity);
+
+        if (constructionType == null || roleType == null) {
+            throw new IllegalArgumentException("ConstructionType and RoleType are mandatory!");
+        }
         this.constructionType = constructionType;
         this.roleType = roleType;
     }
 
     public void setFixedWingAttributes(Double wingLength, Integer landingWheels) {
-        if (this.constructionType != ConstructionType.FIXED_WING) {
-            throw new IllegalStateException("Cannot set FixedWing attributes for a " + this.constructionType);
-        }
+        validateType(ConstructionType.FIXED_WING);
+        if (wingLength == null || wingLength <= 0) throw new IllegalArgumentException("Invalid wing length");
         this.wingLength = wingLength;
         this.landingWheels = landingWheels;
     }
 
     public Double getWingLength() {
-        validateConstructionType(ConstructionType.FIXED_WING);
+        validateType(ConstructionType.FIXED_WING);
         return wingLength;
     }
 
     public Integer getLandingWheels() {
-        validateConstructionType(ConstructionType.FIXED_WING);
+        validateType(ConstructionType.FIXED_WING);
         return landingWheels;
     }
 
     public void setRotorcraftAttributes(Integer amountOfRotors, Double maxHoverAltitude) {
-        if (this.constructionType != ConstructionType.ROTORCRAFT) {
-            throw new IllegalStateException("Cannot set Rotorcraft attributes for a " + this.constructionType);
-        }
+        validateType(ConstructionType.ROTORCRAFT);
+        if (amountOfRotors == null || amountOfRotors <= 0) throw new IllegalArgumentException("Invalid rotors count");
         this.amountOfRotors = amountOfRotors;
         this.maxHoverAltitude = maxHoverAltitude;
     }
 
     public Integer getAmountOfRotors() {
-        validateConstructionType(ConstructionType.ROTORCRAFT);
+        validateType(ConstructionType.ROTORCRAFT);
         return amountOfRotors;
     }
 
     public Double getMaxHoverAltitude() {
-        validateConstructionType(ConstructionType.ROTORCRAFT);
+        validateType(ConstructionType.ROTORCRAFT);
         return maxHoverAltitude;
     }
 
     public void setCommercialAttributes(Double cargoCapacity) {
-        if (this.roleType != RoleType.COMMERCIAL) {
-            throw new IllegalStateException("Cannot set Commercial attributes for a " + this.roleType);
-        }
+        validateRole(RoleType.COMMERCIAL);
+        if (cargoCapacity < 0) throw new IllegalArgumentException("Cargo capacity cannot be negative");
         this.cargoCapacity = cargoCapacity;
     }
 
     public Double getCargoCapacity() {
-        validateRoleType(RoleType.COMMERCIAL);
+        validateRole(RoleType.COMMERCIAL);
         return cargoCapacity;
     }
 
     public void setPrivateAttributes(String personalizedInterior) {
-        if (this.roleType != RoleType.PRIVATE) {
-            throw new IllegalStateException("Cannot set Private attributes for a " + this.roleType);
-        }
+        validateRole(RoleType.PRIVATE);
         this.personalizedInterior = personalizedInterior;
     }
 
     public String getPersonalizedInterior() {
-        validateRoleType(RoleType.PRIVATE);
+        validateRole(RoleType.PRIVATE);
         return personalizedInterior;
     }
 
-    private void validateConstructionType(ConstructionType expected) {
+    private void validateType(ConstructionType expected) {
         if (this.constructionType != expected) {
-            throw new IllegalStateException("Field not available for construction type: " + this.constructionType);
+            throw new IllegalStateException("Operation not allowed. Aircraft is " + this.constructionType + ", but expected " + expected);
         }
     }
 
-    private void validateRoleType(RoleType expected) {
+    private void validateRole(RoleType expected) {
         if (this.roleType != expected) {
-            throw new IllegalStateException("Field not available for role type: " + this.roleType);
+            throw new IllegalStateException("Operation not allowed. Aircraft role is " + this.roleType + ", but expected " + expected);
         }
     }
 
@@ -141,26 +136,20 @@ public class Aircraft implements BaseEntity {
     }
 
     public void setModel(String model) {
-        if (model == null || model.trim().isEmpty()) {
-            throw new IllegalArgumentException("Model cannot be null or empty.");
-        }
+        if (model == null || model.isBlank()) throw new IllegalArgumentException("Model required");
         this.model = model;
     }
 
     public void setCapacity(int capacity) {
-        if (capacity < 0) {
-            throw new IllegalArgumentException("Capacity cannot be negative.");
-        }
+        if (capacity < 0) throw new IllegalArgumentException("Capacity must be positive");
         this.capacity = capacity;
     }
-
 
     public void addSeat(String seatNumber, SeatClass seatClass) {
         if (seatNumber == null || seatNumber.trim().isEmpty()) {
             throw new IllegalArgumentException("Seat number cannot be empty.");
         }
-        Seat newSeat = new Seat(seatNumber, seatClass, this);
-        this.seats.add(newSeat);
+        this.seats.add(new Seat(seatNumber, seatClass, this));
     }
 
     public Optional<Seat> getSeat(String seatNumber) {
